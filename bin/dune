@@ -1,0 +1,4 @@
+(executable
+ (public_name simpelml)
+ (name main)
+ (libraries simpelml))

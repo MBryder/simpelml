@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/simpelml/META"
+  "_build/install/default/lib/simpelml/dune-package"
+  "_build/install/default/lib/simpelml/opam"
+]
+bin: [
+  "_build/install/default/bin/simpelml.exe"
+]

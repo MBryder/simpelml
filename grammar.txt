@@ -1,0 +1,26 @@
+  file ::= def* stmt*
+  func ::= def type ident ( ident*, ) stmt
+  stmt ::= ident ( expr*, )
+         | if expr stmt
+         | if expr stmt else stmt
+         | loop expr stmt
+         | { stmt* }
+  expr ::= integer
+         | ident
+         | expr + expr
+         | expr - expr
+         | expr * expr
+         | expr / expr
+         | - expr
+         | ( expr )
+  type ::= void
+         | int
+         | float
+         | double
+         | char
+         | bool
+  var ::= type [expr*,]
+         | type [{expr*,}*,]
+  moper ::= inv (var)
+         | trans (var)
+         | var * var
