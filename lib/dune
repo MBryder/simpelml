@@ -2,5 +2,7 @@
  (modules lexer))
 (menhir
  (modules parser))
-(library
- (name simpelml))
+(executable
+ (name simpelml)
+ (promote (until-clean))
+ (flags ()))
