@@ -1,12 +1,12 @@
 
 (* Lexical analyzer for While Language. *)
-
 {
   open Lexing
   open Ast
   open Parser
 
   exception Lexing_error of string
+
 
   let id_or_kwd =
     let h = Hashtbl.create 32 in
