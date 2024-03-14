@@ -97,7 +97,27 @@ and string = parse
   | eof
       { raise (Lexing_error "unterminated string") }
 {
-let token_to_string = function
+  let next_token =
+  Printf.printf "Token: ";
+  let tokens = Queue.create () in (* next tokens to emit *)
+  fun lb ->
+    (* Fill the queue if it's empty *)
+    if Queue.is_empty tokens then begin
+      let l = next_tokens lb in
+      List.iter (fun t -> Queue.add t tokens) l
+    end;
+  let t = Queue.pop tokens in
+    (* Processing the token *)
+    begin match t with
+      | NEWLINE -> Printf.printf "\nToken: "
+      | _ -> Printf.printf "[%s], " (token_to_string t)
+    end;
+    t (* Returning the token *)
+
+
+
+
+    let token_to_string = function
     | PLUS -> "PLUS"
     | MINUS -> "MINUS"
     | TIMES -> "TIMES"
@@ -137,22 +157,5 @@ let token_to_string = function
     | EOF -> "EOF"
     | _ -> "Unknown token"
 
-
-  let next_token =
-  Printf.printf "Token: ";
-  let tokens = Queue.create () in (* next tokens to emit *)
-  fun lb ->
-    (* Fill the queue if it's empty *)
-    if Queue.is_empty tokens then begin
-      let l = next_tokens lb in
-      List.iter (fun t -> Queue.add t tokens) l
-    end;
-  let t = Queue.pop tokens in
-    (* Processing the token *)
-    begin match t with
-      | NEWLINE -> Printf.printf "\nToken: "
-      | _ -> Printf.printf "[%s], " (token_to_string t)
-    end;
-    t (* Returning the token *)
 }
 
