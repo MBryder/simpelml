@@ -97,6 +97,7 @@ and string = parse
   | eof
       { raise (Lexing_error "unterminated string") }
 {
+
   let next_token =
   Printf.printf "Token: ";
   let tokens = Queue.create () in (* next tokens to emit *)
@@ -115,9 +116,7 @@ and string = parse
     t (* Returning the token *)
 
 
-
-
-    let token_to_string = function
+  let token_to_string = function
     | PLUS -> "PLUS"
     | MINUS -> "MINUS"
     | TIMES -> "TIMES"
