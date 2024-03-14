@@ -22,6 +22,7 @@ let file =
   | Some f -> f
   | None -> Arg.usage spec usage; exit 1
 
+  
 let report (b,e) =
   let l = b.pos_lnum in
   let fc = b.pos_cnum - b.pos_bol + 1 in
