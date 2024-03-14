@@ -2,7 +2,7 @@ all: SimpelML.exe
 	dune exec lib/simpelml.exe exampels/test.sm
 
 SimpelML.exe:
-	dune build lib/simpelml.exe
+	dune build
 
 clean:
 	dune clean

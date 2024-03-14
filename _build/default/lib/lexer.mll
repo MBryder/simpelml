@@ -96,15 +96,63 @@ and string = parse
 	string lexbuf }
   | eof
       { raise (Lexing_error "unterminated string") }
-
 {
+let token_to_string = function
+    | PLUS -> "PLUS"
+    | MINUS -> "MINUS"
+    | TIMES -> "TIMES"
+    | DIV -> "DIV"
+    | MOD -> "MOD"
+    | EQUAL -> "EQUAL"
+    | CMP cmp ->
+        begin match cmp with
+        | Beq -> "CMP Beq"
+        | Bneq -> "CMP Bneq"
+        | Blt -> "CMP Blt"
+        | Ble -> "CMP Ble"
+        | Bgt -> "CMP Bgt"
+        | Bge -> "CMP Bge"
+        end
+    | LP -> "LP"
+    | RP -> "RP"
+    | COMMA -> "COMMA"
+    | COLON -> "COLON"
+    | CST cst ->
+        begin match cst with
+        | Cint i -> "CST (Cint " ^ string_of_int i ^ ")"
+        | Cbool b -> "CST (Cbool " ^ string_of_bool b ^ ")"
+        | Cstring s -> "CST (Cstring " ^ s ^ ")"
+        end
+    | IDENT id -> "IDENT " ^ id
+    | IF -> "IF"
+    | ELSE -> "ELSE"
+    | WHILE -> "WHILE"
+    | AND -> "AND"
+    | OR -> "OR"
+    | NOT -> "NOT"
+    | PRINT -> "PRINT"
+    | NEWLINE -> "NEWLINE"
+    | BEGIN -> "BEGIN"
+    | END -> "END"
+    | EOF -> "EOF"
+    | _ -> "Unknown token"
+
 
   let next_token =
-    let tokens = Queue.create () in (* next tokens to emit *)
-    fun lb ->
-      if Queue.is_empty tokens then begin
-	let l = next_tokens lb in
-	List.iter (fun t -> Queue.add t tokens) l
-      end;
-      Queue.pop tokens
+  Printf.printf "Token: ";
+  let tokens = Queue.create () in (* next tokens to emit *)
+  fun lb ->
+    (* Fill the queue if it's empty *)
+    if Queue.is_empty tokens then begin
+      let l = next_tokens lb in
+      List.iter (fun t -> Queue.add t tokens) l
+    end;
+  let t = Queue.pop tokens in
+    (* Processing the token *)
+    begin match t with
+      | NEWLINE -> Printf.printf "\nToken: "
+      | _ -> Printf.printf "[%s], " (token_to_string t)
+    end;
+    t (* Returning the token *)
 }
+

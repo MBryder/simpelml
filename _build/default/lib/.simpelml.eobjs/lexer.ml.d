@@ -1,1 +1,1 @@
-lib/lexer.ml: Ast Buffer Hashtbl Lexing List Parser Queue String
+lib/lexer.ml: Ast Buffer Hashtbl Lexing List Parser Printf Queue String
