@@ -1,4 +1,2 @@
-*.exe
-
 _build
-lib\simpelml.exe
+simpelml.exe
