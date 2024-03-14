@@ -1,11 +1,10 @@
-all: SimpelML.exe
+all: simpelml.exe
 	dune exec lib/simpelml.exe exampels/test.sm
 
-SimpelML.exe:
-	dune build
+simpelml.exe:
+	dune build lib/simpelml.exe
 
 clean:
 	dune clean
 
-.PHONY:
-	all clean lib/simpelml.exe
+.PHONY: all clean simpelml.exe

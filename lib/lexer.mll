@@ -151,6 +151,7 @@ let token_to_string = function
     (* Processing the token *)
     begin match t with
       | NEWLINE -> Printf.printf "\nToken: "
+      | EOF -> Printf.printf "[%s]\n" (token_to_string t)
       | _ -> Printf.printf "[%s], " (token_to_string t)
     end;
     t (* Returning the token *)
