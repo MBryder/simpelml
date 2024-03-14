@@ -2,7 +2,10 @@
 (* Abstract Syntax of While Language. *)
 
 (* Parsed trees.
-   This is the output of the parser and the input of the interpreter. *)
+   This is the output of the parser and the input of the interpreter. 
+   Den her fil indeholder altså definitioner på elementer og operationer, relateret til vores abstract syntax tree som bliver skabt i 
+   parser.mly*)
+
 
 
 (* Identifiers. *)
