@@ -11,3 +11,6 @@ module Parser = Dune__exe__Parser
 
 (** @canonical Dune__exe.Simpelml *)
 module Simpelml = Dune__exe__Simpelml
+
+module Dune__exe = struct end
+[@@deprecated "this module is shadowed"]

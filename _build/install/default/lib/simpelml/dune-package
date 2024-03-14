@@ -1,1 +1,4 @@
-../../../../default/simpelml.dune-package
+(lang dune 3.5)
+(name simpelml)
+(sections (lib .) (bin ../../bin))
+(files (lib (META dune-package opam)) (bin (simpelml.exe)))
