@@ -1,9 +1,9 @@
 # E:\OCaml\OCaml64\home\Marcus\.opam\4.14.0+mingw64c\bin\dune.exe exec lib/simpelml.exe exampels/test.sm
 # OCAMLPARAM: unset
 # Shared cache: disabled
-# Workspace root: "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml"
+# Workspace root: "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2"
 # Auto-detected concurrency: 24
-$ E:\OCaml\OCaml64\home\Marcus\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > E:\OCaml\OCaml64\tmp\dune_591388_output
+$ E:\OCaml\OCaml64\home\Marcus\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config > E:\OCaml\OCaml64\tmp\dune_9cb79a_output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -43,18 +43,18 @@ $ E:\OCaml\OCaml64\home\Marcus\.opam\4.14.0+mingw64c\bin\ocamlc.opt.exe -config 
 #            "E:\\\\OCaml\\\\OCaml64\\\\home\\\\Marcus\\\\.opam\\\\4.14.0+mingw64c\\lib"
 #        ; "DUNE_OCAML_STDLIB" :
 #            "E:/OCaml/OCaml64/home/Marcus/.opam/4.14.0+mingw64c/lib/ocaml"
-#        ; "DUNE_SOURCEROOT" : "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml"
+#        ; "DUNE_SOURCEROOT" : "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2"
 #        ; "INSIDE_DUNE" :
-#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml\\_build/default"
+#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2\\_build/default"
 #        ; "MANPATH" :
-#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml\\_build/install/default/bin"
+#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2\\_build/install/default/bin"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml\\_build/install/default/lib"
+#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2\\_build/install/default/lib"
 #        ; "OCAMLPATH" :
-#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml\\_build/install/default/lib"
+#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2\\_build/install/default/lib"
 #        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml\\_build/install/default/lib/toplevel"
+#            "E:\\OCaml\\OCaml64\\home\\Marcus\\simpelml2\\_build/install/default/lib/toplevel"
 #        ; "OPAMCOLOR" : "always"
 #        }
 #  ; findlib_paths =
