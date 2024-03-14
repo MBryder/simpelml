@@ -8,7 +8,7 @@
 %token <Ast.constant> CST
 %token <Ast.binop> CMP
 %token <string> IDENT
-%token IF ELSE PRINT WHILE AND OR NOT
+%token IF ELSE PRINT WHILE FOR AND OR NOT ELIF
 %token EOF
 %token LP RP COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD

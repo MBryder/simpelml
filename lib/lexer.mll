@@ -12,12 +12,11 @@
     let h = Hashtbl.create 32 in
     List.iter (fun (s, tok) -> Hashtbl.add h s tok)
       [
-       "if", IF; "else", ELSE;
+       "if", IF; "else", ELSE; "elif", ELIF;
        "print", PRINT;
-       "while", WHILE;
+       "while", WHILE; "for", FOR;
        "and", AND; "or", OR; "not", NOT;
-       "True", CST (Cbool true);
-       "False", CST (Cbool false);
+       "True", CST (Cbool true); "False", CST (Cbool false);
      ];
    fun s -> try Hashtbl.find h s with Not_found -> IDENT s
 
