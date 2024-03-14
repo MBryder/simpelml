@@ -1,5 +1,5 @@
 
-/* Parser for While */
+/* Parser for simpelML */
 
 %{
   open Ast
