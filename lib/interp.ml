@@ -34,7 +34,6 @@ let rec print_value = function
     for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
     printf "]"
 
-(* Printing a list of values. *)
 let rec print_values vl = match vl with
   | [] -> printf "@."
   | [v] ->
@@ -54,8 +53,9 @@ let rec interp_expr ctx = function
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
+  | Elist el -> Vlist (Array.of_list (List.map (interp_expr ctx) el))
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
-  | Elist l -> Vlist (Array.of_list (List.map (interp_expr ctx) l))
+  
 
 (* Interpreting constants. *)
 and interp_const = function
