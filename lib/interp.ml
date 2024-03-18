@@ -145,17 +145,41 @@ and interp_binop_bool ctx op e1 e2 =
 (* Interpreting a statement *)
 let rec stmt ctx = function
   | Sif (e, s1, s2) ->
-    begin match (interp_expr ctx e) with
+    begin 
+      match interp_expr ctx e with
       | Vbool b1 -> if b1 then stmt ctx s1 else stmt ctx s2
-      | _ -> error "wrong type : bool expected"
+      | _ -> error "wrong type: bool expected"
     end
-  | Sassign ({id}, e1) -> Hashtbl.replace ctx id (interp_expr ctx e1)
-  | Sblock bl ->  block ctx bl
-  | Sprint el -> print_values (List.map (fun e -> interp_expr ctx e) el)
+  | Sassign ({id}, e1) -> 
+    Hashtbl.replace ctx id (interp_expr ctx e1)
+  | Sblock bl -> 
+    block ctx bl
+  | Sprint el -> 
+    print_values (List.map (fun e -> interp_expr ctx e) el)
   | Swhile (e, s) ->
-    match interp_expr ctx e with
-    | Vbool b -> if b then (stmt ctx s; stmt ctx (Swhile (e, s))) else printf ""
-    | _ -> error "wrong type : bool expected"
+    begin 
+      match interp_expr ctx e with
+      | Vbool b -> if b then (stmt ctx s; stmt ctx (Swhile (e, s))) else ()
+      | _ -> error "wrong type: bool expected"
+    end
+  | Sfor ({id; _}, start_expr, end_expr, body_stmt) ->
+    begin
+      let start_val = 
+        match interp_expr ctx start_expr with
+        | Vint n -> n
+        | _ -> error "FOR loop start expression must be integer"
+      in
+      let end_val = 
+        match interp_expr ctx end_expr with
+        | Vint n -> n
+        | _ -> error "FOR loop end expression must be integer"
+      in
+      for i = start_val to end_val do
+        Hashtbl.replace ctx id (Vint i);  (* Update the loop variable *)
+        stmt ctx body_stmt;               (* Execute the loop body *)
+      done
+    end
+
 
 and block ctx = function
   | [] -> ()

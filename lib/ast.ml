@@ -46,6 +46,7 @@
      | Sblock of stmt list             (* a sequence of statements *)
      | Sprint of expr list             (* printing a list of expressions *)
      | Swhile of expr * stmt           (* while loop *)
+     | Sfor of ident * expr * expr * stmt (* for loop *)
    
    (* a program is simply a statement. *)
    type file = stmt
