@@ -14,7 +14,7 @@
       [
        "if", IF; "else", ELSE; "elif", ELIF;
        "print", PRINT;
-       "while", WHILE; "FOR", FOR; "TO", TO; "DO", DO;
+       "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
      ];
@@ -128,8 +128,7 @@ let token_to_string = function
     | ELSE -> "ELSE"
     | WHILE -> "WHILE"
     | FOR -> "FOR"
-    | DO -> "DO"
-    | TO -> "TO"
+    | IN -> "IN"
     | AND -> "AND"
     | OR -> "OR"
     | NOT -> "NOT"

@@ -3,5 +3,5 @@ print("1 + 2")
 print("1 + 2")
 print(1 + 2)
 #print(wwwwwwwwwwwwwwwwwwwww)
-FOR i = 1 TO 5 DO
+for i = 1 in 10:
     print("Loop iteration: ", i)
