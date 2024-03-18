@@ -163,7 +163,6 @@ let rec stmt ctx = function
       | _ -> error "wrong type: bool expected"
     end
   | Sfor ({id; _}, start_expr, end_expr, body_stmt) ->
-    begin
       let start_val = 
         match interp_expr ctx start_expr with
         | Vint n -> n
@@ -174,11 +173,14 @@ let rec stmt ctx = function
         | Vint n -> n
         | _ -> error "FOR loop end expression must be integer"
       in
-      for i = start_val to end_val do
-        Hashtbl.replace ctx id (Vint i);  (* Update the loop variable *)
-        stmt ctx body_stmt;               (* Execute the loop body *)
-      done
-    end
+      let rec loop i =
+        if i <= end_val then begin
+          Hashtbl.replace ctx id (Vint i); (* Update the loop variable *)
+          stmt ctx body_stmt;              (* Execute the loop body *)
+          loop (i + 1)                     (* Recursive call for the next iteration *)
+        end
+      in
+      loop start_val                       (* Start the loop *)
 
 
 and block ctx = function
