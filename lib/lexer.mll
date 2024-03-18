@@ -64,6 +64,8 @@ rule next_tokens = parse
   | ">="    { [CMP Bge] }
   | '('     { [LP] }
   | ')'     { [RP] }
+  | '['     { [LSQ] }
+  | ']'     { [RSQ] }
   | ','     { [COMMA] }
   | ':'     { [COLON] }
   | integer as s
@@ -115,6 +117,8 @@ let token_to_string = function
         end
     | LP -> "LP"
     | RP -> "RP"
+    | LSQ -> "LSQ"
+    | RSQ -> "RSQ"
     | COMMA -> "COMMA"
     | COLON -> "COLON"
     | CST cst ->

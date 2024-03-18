@@ -10,7 +10,7 @@
 %token <string> IDENT
 %token IF ELSE PRINT WHILE FOR IN AND OR NOT ELIF
 %token EOF
-%token LP RP COMMA EQUAL COLON BEGIN END NEWLINE
+%token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD
 
 /* priorities and associativities */
@@ -46,6 +46,8 @@ expr:
     { Ebinop (o, e1, e2) }
 | LP e = expr RP
     { e }
+| LSQ l = separated_list(COMMA, expr) RSQ
+    { Elist l }
 ;
 
 suite:
