@@ -64,6 +64,8 @@ rule next_tokens = parse
   | ">="    { [CMP Bge] }
   | '('     { [LP] }
   | ')'     { [RP] }
+  | '['     { [LSQ] }
+  | ']'     { [RSQ] }
   | ','     { [COMMA] }
   | ':'     { [COLON] }
   | integer as s

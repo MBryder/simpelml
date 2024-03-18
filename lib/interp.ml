@@ -16,17 +16,23 @@ type value =
   | Vbool of bool
   | Vint of int
   | Vstring of string
+  | Vlist of value array
 
 (* Variables are stored in a hash table that is passed to the
    following OCaml functions as parameter `ctx`. *)
 type ctx = (string, value) Hashtbl.t
 
 (* Print a value on standard output *)
-let print_value = function
+let rec print_value = function
   | Vbool true -> printf "True"
   | Vbool false -> printf "False"
   | Vint n -> printf "%d" n
   | Vstring s -> printf "%s" s
+  | Vlist a ->
+    let n = Array.length a in
+    printf "[";
+    for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
+    printf "]"
 
 (* Printing a list of values. *)
 let rec print_values vl = match vl with
@@ -49,6 +55,7 @@ let rec interp_expr ctx = function
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
+  | Elist l -> Vlist (Array.of_list (List.map (interp_expr ctx) l))
 
 (* Interpreting constants. *)
 and interp_const = function
