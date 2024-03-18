@@ -162,6 +162,9 @@ let rec stmt ctx = function
       | Vbool b -> if b then (stmt ctx s; stmt ctx (Swhile (e, s))) else ()
       | _ -> error "wrong type: bool expected"
     end
+  (**************************************************************************)
+  (*********************Her intepreter vi et FOR LOOP************************)
+  (**************************************************************************)
   | Sfor ({id; _}, start_expr, end_expr, body_stmt) ->
       let start_val = 
         match interp_expr ctx start_expr with
