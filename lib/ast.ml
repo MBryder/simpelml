@@ -39,6 +39,7 @@
      | Ebinop of binop * expr * expr      (* binary operation *)
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
+     | Eget of expr * expr                (* e1[e2] *)
    
    (* Statements. *)
    type stmt =

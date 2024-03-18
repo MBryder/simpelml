@@ -54,8 +54,20 @@ let rec interp_expr ctx = function
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
   | Elist el -> Vlist (Array.of_list (List.map (interp_expr ctx) el))
+  | Eget (e1, e2) ->
+      begin match interp_expr ctx e1 with
+      | Vlist l ->
+        let i = expr_int ctx e2 in
+      (try l.(i) with Invalid_argument _ -> error "index out of bounds")
+| _ -> error "list expected" end
+
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
   
+and expr_int ctx e = match interp_expr ctx e with
+  | Vbool false -> 0
+  | Vbool true -> 1
+  | Vint n -> n
+  | _ -> error "This must be an integer"
 
 (* Interpreting constants. *)
 and interp_const = function

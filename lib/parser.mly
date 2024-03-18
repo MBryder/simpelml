@@ -38,6 +38,8 @@ expr:
     { Ecst c }
 | id = ident
     { Eident id }
+| e1 = expr LSQ e2 = expr RSQ
+    { Eget (e1, e2) }
 | MINUS e1 = expr %prec unary_minus
     { Eunop (Uneg, e1) }
 | NOT e1 = expr
