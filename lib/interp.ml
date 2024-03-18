@@ -163,7 +163,24 @@ let rec stmt ctx = function
       | _ -> error "wrong type: bool expected"
     end
   (**************************************************************************)
-  (*********************Her intepreter vi et FOR LOOP************************)
+  (* Dette afsnit af fortolkeren håndterer udførelsen af et 'for' loop.     *)
+  (*                                                                        *)
+  (* Parametre:                                                             *)
+  (*   - id: Identifikatoren for loop variable.                             *)
+  (*   - start_expr: Et udtryk der evalueres for at sætte startværdien for  *)
+  (*     loop variable. Skal evaluere til et heltal.                        *)
+  (*   - end_expr: Et udtryk der evalueres for at sætte slutværdien for     *)
+  (*     loop variable. Skal også evaluere til et heltal.                   *)
+  (*   - body_stmt: Blokken af udsagn, der skal udføres inden for løkken.   *)
+  (*                                                                        *)
+  (* Udførelse:                                                             *)
+  (*   'start_expr' og 'end_expr' evalueres én gang i begyndelsen.          *)
+  (*   Løkken itererer derefter, opdaterer loop variable 'id' fra           *)
+  (*   'start_val' til 'end_val' og udfører 'body_stmt' for hver værdi.     *)
+  (*   Hvis 'start_expr' eller 'end_expr' ikke evaluerer til heltal,        *)
+  (*   udløses en fejl. Løkken bruger en rekursiv indre funktion 'loop'      *)
+  (*   til iteration, hvilket demonstrerer funktionel iteration frem for    *)
+  (*   en typisk imperativ løkkekonstruktion.                               *)
   (**************************************************************************)
   | Sfor ({id; _}, start_expr, end_expr, body_stmt) ->
       let start_val = 
@@ -183,7 +200,7 @@ let rec stmt ctx = function
           loop (i + 1)                     (* Recursive call for the next iteration *)
         end
       in
-      loop start_val                       (* Start the loop *)
+      loop start_val                       (* Vi starter loopet her *)
 
 
 and block ctx = function
