@@ -8,7 +8,7 @@
 %token <Ast.constant> CST
 %token <Ast.binop> CMP
 %token <string> IDENT
-%token IF ELSE PRINT WHILE FOR TO DO AND OR NOT ELIF
+%token IF ELSE PRINT WHILE FOR IN AND OR NOT ELIF
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD
@@ -66,7 +66,7 @@ stmt:
     { Sif (c, s1, s2) }
 | WHILE e = expr COLON s = suite
     { Swhile (e, s) }
-| FOR id = IDENT EQUAL e1 = expr TO e2 = expr DO s = suite
+| FOR id = IDENT EQUAL e1 = expr IN e2 = expr COLON s = suite
     { Sfor ({loc = ($startpos, $endpos); id = id}, e1, e2, s) }
 ;
 
