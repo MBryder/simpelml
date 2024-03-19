@@ -17,7 +17,10 @@
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
-     ];
+       "Func", FUNC; (* muligvis slette func hvis def er vores function*)
+       "return", RETURN; 
+       "def", DEF 
+;      ];
    fun s -> try Hashtbl.find h s with Not_found -> IDENT s
 
   let string_buffer = Buffer.create 1024
@@ -128,6 +131,9 @@ let token_to_string = function
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end
     | IDENT id -> "IDENT " ^ id
+    | FUNC -> "FUNC"
+    | RETURN -> "RETURN"
+    | DEF -> "DEF"
     | IF -> "IF"
     | ELSE -> "ELSE"
     | WHILE -> "WHILE"
@@ -142,7 +148,6 @@ let token_to_string = function
     | END -> "END"
     | EOF -> "EOF"
     | _ -> "Unknown token"
-
 
   let next_token =
   Printf.printf "Token: ";
@@ -161,5 +166,7 @@ let token_to_string = function
       | _ -> Printf.printf "[%s], " (token_to_string t)
     end;
     t (* Returning the token *)
+
+
 }
 

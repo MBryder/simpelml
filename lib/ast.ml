@@ -40,6 +40,7 @@
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
      | Eget of expr * expr                (* e1[e2] *)
+     | Ecall of ident * expr list (* paramtrene til funktioner*)
    
    (* Statements. *)
    type stmt =
@@ -49,7 +50,13 @@
      | Sprint of expr list             (* printing a list of expressions *)
      | Swhile of expr * stmt           (* while loop *)
      | Sfor of ident * expr * expr * stmt (* for loop *)
-   
+     | Sreturn of expr  (* til funktion*)
+     | Seval of expr (* tror også den her og Sset er til funktion*)
+     | Sset of expr * expr * expr 
+
+  and def = ident * ident list * stmt (*definerer function *)
+
+  (* i mini-python står der det her: and file = def list * stmt, og ikke type file = stmt *)
    (* a program is simply a statement. *)
    type file = stmt
    
