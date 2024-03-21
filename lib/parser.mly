@@ -77,6 +77,10 @@ stmt:
 simple_stmt:
 | id = ident EQUAL e = expr
     { Sassign (id, e) }
+| id = ident PLUS PLUS
+    { Sincr (id)}
+| id = ident MINUS MINUS
+    { Sdecr (id)}
 | id = ident PLUS EQUAL e = expr
     { Sassign (id, Ebinop (Badd, Eident id, e)) }
 | PRINT LP el = separated_list(COMMA, expr) RP

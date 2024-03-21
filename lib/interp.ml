@@ -200,6 +200,20 @@ let rec stmt ctx = function
       end
     in
     loop start_val                       (* Start the loop *)
+  | Sincr {id} ->
+    begin
+      match Hashtbl.find_opt ctx id with
+      | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n + 1))
+      | Some _ -> error "increment operation applied to non-integer"
+      | None -> error "variable not found for increment"
+    end
+  | Sdecr {id} ->
+    begin
+      match Hashtbl.find_opt ctx id with
+      | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n - 1))
+      | Some _ -> error "increment operation applied to non-integer"
+      | None -> error "variable not found for increment"
+    end
   | Slist_assign (arr_expr, idx_expr, new_val_expr) ->
     begin
       match (interp_expr ctx arr_expr, interp_expr ctx idx_expr) with
