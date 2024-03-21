@@ -181,28 +181,37 @@ let rec stmt ctx = function
       | Vbool b -> if b then (stmt ctx s; stmt ctx (Swhile (e, s))) else ()
       | _ -> error "wrong type: bool expected"
     end
-  (**************************************************************************)
-  (*********************Her intepreter vi et FOR LOOP************************)
-  (**************************************************************************)
   | Sfor ({id; _}, start_expr, end_expr, body_stmt) ->
-      let start_val = 
-        match interp_expr ctx start_expr with
-        | Vint n -> n
-        | _ -> error "FOR loop start expression must be integer"
-      in
-      let end_val = 
-        match interp_expr ctx end_expr with
-        | Vint n -> n
-        | _ -> error "FOR loop end expression must be integer"
-      in
-      let rec loop i =
-        if i <= end_val then begin
-          Hashtbl.replace ctx id (Vint i); (* Update the loop variable *)
-          stmt ctx body_stmt;              (* Execute the loop body *)
-          loop (i + 1)                     (* Recursive call for the next iteration *)
-        end
-      in
-      loop start_val                       (* Start the loop *)
+    let start_val = 
+      match interp_expr ctx start_expr with
+      | Vint n -> n
+      | _ -> error "FOR loop start expression must be integer"
+    in
+    let end_val = 
+      match interp_expr ctx end_expr with
+      | Vint n -> n
+      | _ -> error "FOR loop end expression must be integer"
+    in
+    let rec loop i =
+      if i <= end_val then begin
+        Hashtbl.replace ctx id (Vint i); (* Update the loop variable *)
+        stmt ctx body_stmt;              (* Execute the loop body *)
+        loop (i + 1)                     (* Recursive call for the next iteration *)
+      end
+    in
+    loop start_val                       (* Start the loop *)
+  | Slist_assign (arr_expr, idx_expr, new_val_expr) ->
+    begin
+      match (interp_expr ctx arr_expr, interp_expr ctx idx_expr) with
+      | (Vlist arr, Vint i) ->
+          if i >= 0 && i < Array.length arr then
+            let new_val = interp_expr ctx new_val_expr in
+            arr.(i) <- new_val  (* Perform the assignment *)
+          else
+            error "Array index out of bounds"
+      | (_, Vint _) -> error "First expression must be a list"
+      | (_, _) -> error "Second expression must be an integer"
+    end
 
 
 and block ctx = function

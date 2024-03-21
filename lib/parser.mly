@@ -70,6 +70,8 @@ stmt:
     { Swhile (e, s) }
 | FOR id = IDENT EQUAL e1 = expr IN e2 = expr COLON s = suite
     { Sfor ({loc = ($startpos, $endpos); id = id}, e1, e2, s) }
+| e1 = expr LSQ e2 = expr RSQ EQUAL e3 = expr NEWLINE
+      { Slist_assign (e1, e2, e3) }
 ;
 
 simple_stmt:

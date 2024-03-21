@@ -162,4 +162,3 @@ let token_to_string = function
     end;
     t (* Returning the token *)
 }
-

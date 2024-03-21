@@ -49,6 +49,7 @@
      | Sprint of expr list             (* printing a list of expressions *)
      | Swhile of expr * stmt           (* while loop *)
      | Sfor of ident * expr * expr * stmt (* for loop *)
+     | Slist_assign of expr * expr * expr  (* New statement type: array, index, new value *)
    
    (* a program is simply a statement. *)
    type file = stmt
