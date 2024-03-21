@@ -114,6 +114,7 @@ let token_to_string = function
         | Ble -> "CMP Ble"
         | Bgt -> "CMP Bgt"
         | Bge -> "CMP Bge"
+        | _ -> "Unknown token"
         end
     | LP -> "LP"
     | RP -> "RP"
