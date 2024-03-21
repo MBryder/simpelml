@@ -1,9 +1,13 @@
 print("1 + 2")
 print("1 + 2")
 print("1 + 2")
+
+p = [[1,2,3], [1,2,3,4]]
+print(p)
+
 o = [1,2,45,3,4]
 print(o)
-print(o[5])
 #print(wwwwwwwwwwwwwwwwwwwww)
+
 for i = 1 in 10:
     print("Loop iteration: ", i)

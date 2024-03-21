@@ -56,6 +56,7 @@ rule next_tokens = parse
   | "//"    { [DIV] }
   | '%'     { [MOD] }
   | '='     { [EQUAL] }
+  | "^T"    { [TRANS] }
   | "=="    { [CMP Beq] }
   | "!="    { [CMP Bneq] }
   | "<"     { [CMP Blt] }
@@ -106,6 +107,7 @@ let token_to_string = function
     | DIV -> "DIV"
     | MOD -> "MOD"
     | EQUAL -> "EQUAL"
+    | TRANS -> "TRANS"
     | CMP cmp ->
         begin match cmp with
         | Beq -> "CMP Beq"

@@ -12,15 +12,16 @@
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD
+%token TRANS
 
-/* priorities and associativities */
+/* priorities/precedence and associativities */
 
 %left OR
 %left AND
 %nonassoc NOT
 %nonassoc CMP
 %left PLUS MINUS
-%left TIMES DIV MOD
+%left TIMES DIV MOD TRANS
 %nonassoc unary_minus
 
 %start file
@@ -50,6 +51,8 @@ expr:
     { e }
 | LSQ l = separated_list(COMMA, expr) RSQ
     { Elist l }
+| TRANS m = expr
+    {Eunop (Utrans, m)}
 ;
 
 suite:
