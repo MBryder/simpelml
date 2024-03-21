@@ -130,10 +130,10 @@ let token_to_string = function
         | Cbool b -> "CST (Cbool " ^ string_of_bool b ^ ")"
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end
-    | IDENT id -> "IDENT " ^ id
-    | FUNC -> "FUNC"
+    | IDENT id -> "IDENT " ^ id (* ID til functionen (altså navnet på funktionen*)
+    | FUNC -> "FUNC" (*func it up *)
     | RETURN -> "RETURN"
-    | DEF -> "DEF"
+    | DEF -> "DEF" (*bare nøgleord til at definere funktionen*)
     | IF -> "IF"
     | ELSE -> "ELSE"
     | WHILE -> "WHILE"
