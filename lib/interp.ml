@@ -1,5 +1,3 @@
-
-(* Interpreter for While Language.  *)
 open Ast
 open Format
 
@@ -49,7 +47,7 @@ let rec print_values vl = match vl with
 (* ************************************************************************** *)
 
 (* Interpreting expressions. *)
-let rec interp_expr ctx = function
+let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og Func*)  
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
@@ -62,6 +60,7 @@ let rec interp_expr ctx = function
 | _ -> error "list expected" end
 
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
+
   
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0
@@ -162,7 +161,7 @@ and interp_binop_bool ctx op e1 e2 =
 (* ************************************************************************** *)
 
 (* Interpreting a statement *)
-let rec stmt ctx = function
+let rec stmt ctx = function (* den her er gul fordi den mangler Sreturn _|Seval _|Sset (_, _, _)|Sdef (_, _))*) 
   | Sif (e, s1, s2) ->
     begin 
       match interp_expr ctx e with
@@ -214,3 +213,5 @@ and block ctx = function
 (* ************************************************************************** *)
 
 let file s = stmt (Hashtbl.create 16) s
+
+
