@@ -44,6 +44,22 @@ let rec print_values vl = match vl with
     print_string " ";
     print_values vtl
 
+(*Functions needed for interpreting unary operation "transpose"*)
+let transpose_matrix matrix =
+  let rows = List.length matrix in
+  if rows = 0 then
+    []
+  else
+    let cols = List.length (List.hd matrix) in
+    let transposed = Array.make_matrix cols rows (List.hd (List.hd matrix)) in
+    for i = 0 to rows - 1 do
+      for j = 0 to cols - 1 do
+        transposed.(j).(i) <- List.nth (List.nth matrix i) j
+      done;
+    done;
+    Array.to_list (Array.map Array.to_list transposed);;
+
+
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -90,12 +106,11 @@ and interp_unop ctx op e1 =
       |  Vbool b1 -> Vbool (not b1)
       | _ -> error "wrong unary operand type: argument must be of Boolean type!"
     end
-    Utrans ->
+  | Utrans ->
     begin match v1 with
-      | Vmatrix m1 -> Vmatrix (transpose m1) (*Byt Vmatric ud med datatypen for en matrix, tror at det er en "var"*) (*Logikken skal liges der hvor der står "transpose m1"*)
+      | Vlist m1 -> Vlist (transpose_matrix m1)
       | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
-
 
 (* Interpreting binary operations. *)
 and interp_binop ctx op e1 e2 =
