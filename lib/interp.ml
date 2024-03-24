@@ -46,8 +46,12 @@ let rec print_values vl = match vl with
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
 
+let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
+
 (* Interpreting expressions. *)
-let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og Func*)  
+let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og Efunc*)  
+  | Ecall ( id, e1) -> 
+      (*let closure = Hashtbl.find ctx id in interp_closure ctx closure e1  *)
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
@@ -61,7 +65,14 @@ let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og 
 
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
 
-  
+(*let rec interp_closure ctx closure expr =
+  match closure with 
+  | Func (id, e1) -> 
+    let new_ctx = Hashtbl.create (List.length id) in 
+    List.iter2 (fun param expr -> Hashtbl.add new_ctx param expr) id expr; 
+    interp_expr new_ctx e1
+  | _ -> error "Invalid closure type"*)
+ 
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0
   | Vbool true -> 1

@@ -40,7 +40,7 @@
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
      | Eget of expr * expr                (* e1[e2] *)
-     | Func of string list * expr (* *)
+     | Efunc of string list * expr (* *)
      | Ecall of ident * expr list (*funktionskald med parametre*)
      
      
