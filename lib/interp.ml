@@ -15,6 +15,7 @@ type value =
   | Vint of int
   | Vstring of string
   | Vlist of value array
+  | Vfunc of string list * expr
 
 (* Variables are stored in a hash table that is passed to the
    following OCaml functions as parameter `ctx`. *)
@@ -31,6 +32,7 @@ let rec print_value = function
     printf "[";
     for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
     printf "]"
+  | Vfunc _ -> printf "Funktion på en eller anden måde" 
 
 let rec print_values vl = match vl with
   | [] -> printf "@."
@@ -51,7 +53,9 @@ let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og Efunc*)  
   | Ecall ( id, e1) -> 
-      (*let closure = Hashtbl.find ctx id in interp_closure ctx closure e1  *)
+      let closure = Hashtbl.find ctx id in 
+      interp_closure ctx closure e1 
+  | Efunc (params, body) -> interp_func ctx params body  
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
@@ -65,14 +69,22 @@ let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og 
 
   | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
 
-(*let rec interp_closure ctx closure expr =
-  match closure with 
-  | Func (id, e1) -> 
-    let new_ctx = Hashtbl.create (List.length id) in 
-    List.iter2 (fun param expr -> Hashtbl.add new_ctx param expr) id expr; 
-    interp_expr new_ctx e1
-  | _ -> error "Invalid closure type"*)
- 
+and interp_func ctx params body =
+  (* Creating a closure representing the function *)
+  Vfunc (params, body)
+  and interp_closure ctx closure args =
+  match closure with
+  | Vfunc (params, body) ->
+      (* Create a new context for the function call *)
+      let new_ctx = Hashtbl.create 16 in
+      (* Bind arguments to parameters in the new context *)
+      List.iter2 (fun param arg ->
+        Hashtbl.add new_ctx param (interp_expr ctx arg)
+      ) params args;
+      (* Interpret the function body in the new context *)
+      interp_expr new_ctx body
+  | _ -> error "Invalid closure type"
+
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0
   | Vbool true -> 1
@@ -213,7 +225,10 @@ let rec stmt ctx = function (* den her er gul fordi den mangler Sreturn _|Seval 
         end
       in
       loop start_val                       (* Start the loop *)
-
+  | Sreturn _ -> failwith "Return statement not yet implemented"
+  | Seval _ -> failwith "Eval statement not yet implemented"
+  | Sset (_, _, _) -> failwith "Set statement not implemented yet"
+  | Sdef (_, _) -> failwith "Def statement not supported yet"
 
 and block ctx = function
   | [] -> ()
