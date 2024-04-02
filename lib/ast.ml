@@ -1,5 +1,5 @@
 
-(* Abstract Syntax of While Language. *)
+(* Abstract Syntax of simpleML. *)
 
 (* Parsed trees.
    This is the output of the parser and the input of the interpreter. 

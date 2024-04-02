@@ -1,5 +1,5 @@
 
-(* Lexical analyzer for While Language. *)
+(* Lexical analyzer for simpleML. *)
 (*Lexerens job er at breake inputtet op i en sequence af tokens. Det er altså vores lexer der udfører de aller 
 første skridt i vores compilation-process. Lexeren tager altså kildekoden, og definerer den som en række tokens. Det gør den ved at tage 
 hver character i kildekoden og sammenligne den med en række predefineret mønstre for at identificere tokens -> fx ( er [LP] *)

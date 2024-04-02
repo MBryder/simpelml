@@ -1,5 +1,5 @@
 
-(* Interpreter for While Language.  *)
+(* Interpreter for simpleML *)
 open Ast
 open Format
 
