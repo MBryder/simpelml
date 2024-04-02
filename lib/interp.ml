@@ -16,6 +16,7 @@ type value =
   | Vstring of string
   | Vlist of value array
   | Vfunc of string list * expr
+  | Vident of ident 
 
 (* Variables are stored in a hash table that is passed to the
    following OCaml functions as parameter `ctx`. *)
@@ -33,6 +34,7 @@ let rec print_value = function
     for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
     printf "]"
   | Vfunc _ -> printf "Funktion på en eller anden måde" 
+  | Vident i -> printf "find ud af at printe ident" 
 
 let rec print_values vl = match vl with
   | [] -> printf "@."
@@ -52,7 +54,7 @@ let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og Efunc*)  
-  | Ecall ( id, e1) -> 
+  | Ecall ({ id }, e1) -> 
       let closure = Hashtbl.find ctx id in 
       interp_closure ctx closure e1 
   | Efunc (params, body) -> interp_func ctx params body  
@@ -67,7 +69,7 @@ let rec interp_expr ctx = function (* den her er gul fordi den mangler Ecall og 
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
 | _ -> error "list expected" end
 
-  | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
+  | Eident {id} -> try Hashtbl.find ctx id with _ -> error "not found"
 
 and interp_func ctx params body =
   (* Creating a closure representing the function *)
