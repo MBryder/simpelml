@@ -1,5 +1,8 @@
 
 (* Lexical analyzer for While Language. *)
+(*Lexerens job er at breake inputtet op i en sequence af tokens. Det er altså vores lexer der udfører de aller 
+første skridt i vores compilation-process. Lexeren tager altså kildekoden, og definerer den som en række tokens. Det gør den ved at tage 
+hver character i kildekoden og sammenligne den med en række predefineret mønstre for at identificere tokens -> fx ( er [LP] *)
 {
   open Lexing
   open Ast
@@ -9,8 +12,9 @@
 
 
   let id_or_kwd =
-    let h = Hashtbl.create 32 in
-    List.iter (fun (s, tok) -> Hashtbl.add h s tok)
+    let h = Hashtbl.create 32 in (* bare et hashtabel h med length 32 *)
+    List.iter (fun (s, tok) -> Hashtbl.add h s tok) (* her løber vi faktisk listen igennem der består af par med strings s og korresponderende tokens tok, 
+    og så iterere vi over det til vi har added hvert par til vores hashtabel. Så vi har et hashtabel med strings og deres korresponderende tokens *)
       [
        "if", IF; "else", ELSE; "elif", ELIF;
        "print", PRINT;
@@ -18,13 +22,13 @@
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
      ];
-   fun s -> try Hashtbl.find h s with Not_found -> IDENT s
+   fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det*)
 
-  let string_buffer = Buffer.create 1024
+  let string_buffer = Buffer.create 1024 (* preallokere hukommelse *)
 
   let stack = ref [0]  (* indentation stack *)
 
-  let rec unindent n = match !stack with
+  let rec unindent n = match !stack with 
     | m :: _ when m = n -> []
     | m :: st when m > n -> stack := st; END :: unindent n
     | _ -> raise (Lexing_error "bad indentation")
