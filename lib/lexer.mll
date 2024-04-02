@@ -16,7 +16,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
     List.iter (fun (s, tok) -> Hashtbl.add h s tok) (* her løber vi faktisk listen igennem der består af par med strings s og korresponderende tokens tok, 
     og så iterere vi over det til vi har added hvert par til vores hashtabel. Så vi har et hashtabel med strings og deres korresponderende tokens *)
       [
-       "if", IF; "else", ELSE; "elif", ELIF;
+       "if", IF; "else", ELSE;
        "print", PRINT;
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
