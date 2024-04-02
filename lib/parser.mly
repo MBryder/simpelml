@@ -1,5 +1,5 @@
 
-/* Parser for While */
+/* Parser for simpleML */
 /* Parsing sker efter vi har anvendt vores lexer. Den arbejder altså med de tokens, som vores lexer har produceret. Pointen med parseren 
 er at analysere strukturen i kilde koden, i relation til grammatiken. Dette gør parseren ved at konstruere vores abstract syntax tree, 
 som altså giver os en hierakisk forståelse af kildekoden */ 
