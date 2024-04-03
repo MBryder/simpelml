@@ -1,15 +1,22 @@
-print("1 + 2")
-print("1 + 2")
-print("1 + 2")
-o = [1,2,45,3,4]
-print(o)
-print(o[1])
-m = 3
-m++
-m--
-#print(wwwwwwwwwwwwwwwwwwwww)
-for i = 1 in 10:
-    print("Loop iteration: ", i)
-test = [1,1,1]
-test[0] = 3
-print(test)
+print("\n\n")
+print("SimpelML is an interpreter made to make simpel machine learning easier for beginners.")
+print("Lets test it so far.\n")
+
+x = [[1,49],[1,69],[1,89],[1,99],[1,109]]
+y = [124, 95, 71, 45, 18]
+xT = [[1,1,1,1,1],[49,69,89,99,109]]
+print("X =", x)
+print("Y =", y,"\n")
+
+
+xTx = [[0,0],[0,0]]
+for i = 0 in 1:
+    o = 0
+    for j = 0 in 1:
+        for k = 0 in 4:
+            print(x[k][i] ,"*", xT[j][k])
+            o+= x[k][i] * xT[j][k]
+        xTx[i][j] = o
+        print("xTx =",xTx)
+        print("\n")
+        o = 0

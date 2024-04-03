@@ -1,0 +1,55 @@
+<file> ::= <stmt>
+
+
+<stmt> ::= <Sif>
+         | <Sassign>
+         | <Sblock>
+         | <Sprint>
+         | <Swhile>
+         | <Sfor>
+         | <Sincr>
+         | <Sdecr>
+         | <Slist_assign>
+
+<Sif> ::= "if" <expr> <stmt> "else" <stmt>
+<Sassign> ::= <ident> "=" <expr>
+<Sblock> ::= "{" <stmt_list> "}"
+<Sprint> ::= "print" "(" <expr_list> ")"
+<Swhile> ::= "while" <expr> <stmt>
+<Sfor> ::= "for" <ident> "=" <expr> "to" <expr> <stmt>
+<Sincr> ::= <ident> "++"
+<Sdecr> ::= <ident> "--"
+<Slist_assign> ::= <expr> "[" <expr> "]" "=" <expr>
+
+
+<expr> ::= <Ecst>
+         | <Eunop>
+         | <Ebinop>
+         | <Eident>
+         | <Elist>
+         | <Eget>
+
+<Ecst> ::= <constant>
+<Eunop> ::= <unop> <expr>
+<Ebinop> ::= <expr> <binop> <expr>
+<Eident> ::= <ident>
+<Elist> ::= "[" <expr_list> "]"
+<Eget> ::= <expr> "[" <expr> "]"
+
+
+<constant> ::= <Cbool> | <Cstring> | <Cint>
+<Cbool> ::= "true" | "false"
+<Cstring> ::= '"' <string> '"'
+<Cint> ::= <digit>+
+
+<unop> ::= "-" | "not"
+<binop> ::= "+" | "-" | "*" | "//" | "%" 
+          | "==" | "!=" | "<" | "<=" | ">" | ">="
+          | "and" | "or"
+
+
+<ident> ::= <string>
+
+<string> ::= <char>*
+<char> ::= "a" | "b" | "c" | ... | "z" | "A" | "B" | "C" | ... | "Z"
+<digit> ::= "0" | "1" | "2" | ... | "9"
