@@ -61,7 +61,7 @@ let rec interp_expr ctx = function
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
 | _ -> error "list expected" end
 
-  | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
+  | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "id not found"
   
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0

@@ -20,3 +20,9 @@ for i = 0 in 1:
         print("xTx =",xTx)
         print("\n")
         o = 0
+
+code_done = False
+if code_done:
+    print("finish exampel")
+else:
+    print("Thats all we could show today")
