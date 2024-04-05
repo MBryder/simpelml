@@ -29,8 +29,8 @@
 %%
 
 file:
-| NEWLINE? b = nonempty_list(stmt) NEWLINE? EOF
-    { Sblock b }
+| NEWLINE? dl =list(def) b = nonempty_list(stmt) NEWLINE? EOF
+    { dl, Sblock b }
 ;
 
 def: 
