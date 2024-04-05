@@ -52,7 +52,7 @@ expr:
     { Eunop (Unot, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
-| f = ident LP e = separated_list(COMMA, expr) RP (*definerer functionen*)
+| f = ident LP e = separated_list(COMMA, expr) RP
     {Ecall (f,e)}
 | LP e = expr RP
     { e }
@@ -89,6 +89,8 @@ simple_stmt:
     { Sassign (id, Ebinop (Badd, Eident id, e)) }
 | PRINT LP el = separated_list(COMMA, expr) RP
     { Sprint el }
+| e = expr
+    { Seval e }
 ;
 
 %inline binop:

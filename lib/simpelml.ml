@@ -37,7 +37,7 @@ let () =
       let f = Parser.file Lexer.next_token lb in
       close_in c;
       if !parse_only then exit 0;
-      Interp.file f
+      Interp.file f 
     with
     | Lexer.Lexing_error s ->
       report (lexeme_start_p lb, lexeme_end_p lb);
