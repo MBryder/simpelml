@@ -45,19 +45,25 @@ let rec print_values vl = match vl with
     print_values vtl
 
 (*Functions needed for interpreting unary operation "transpose"*)
-let transpose_matrix matrix =
-  let rows = List.length matrix in
+let transpose_matrix (matrix : 'a list array) : 'a list array =
+  let rows = Array.length matrix in
   if rows = 0 then
-    []
+    [||] (* Empty matrix case *)
   else
-    let cols = List.length (List.hd matrix) in
-    let transposed = Array.make_matrix cols rows (List.hd (List.hd matrix)) in
+    let cols = match matrix.(0) with
+               | [] -> 0  (* If the first inner list is empty, assume zero columns *)
+               | inner_array -> List.length inner_array in
+    let transposed = Array.make_matrix cols rows [] in
     for i = 0 to rows - 1 do
       for j = 0 to cols - 1 do
-        transposed.(j).(i) <- List.nth (List.nth matrix i) j
+        if j < List.length matrix.(i) then
+          transposed.(j).(i) <- List.nth matrix.(i) j
+        else
+          transposed.(j).(i) <- [] (* Fill with empty list if inner list is too short *)
       done;
     done;
-    Array.to_list (Array.map Array.to_list transposed);;
+    transposed
+
 
 
 (* ************************************************************************** *)
@@ -108,8 +114,8 @@ and interp_unop ctx op e1 =
     end
   | Utrans ->
     begin match v1 with
-      | Vlist m1 -> Vlist (transpose_matrix m1)
-      | _ -> error "wrong unary operand type: argument must be a matrix!"
+    | Vlist m1 -> Vlist (transpose_matrix m1)
+    | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
 
 (* Interpreting binary operations. *)
