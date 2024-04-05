@@ -1,3 +1,6 @@
+def test(i):
+    print(i)
+
 print("1 + 2")
 print("1 + 2")
 print("1 + 2")
@@ -7,3 +10,5 @@ print(o[5])
 #print(wwwwwwwwwwwwwwwwwwwww)
 for i = 1 in 10:
     print("Loop iteration: ", i)
+test(3)
+test(4)

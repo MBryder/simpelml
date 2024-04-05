@@ -36,7 +36,7 @@ file:
 def: 
 | DEF f = ident LP x = separated_list(COMMA, ident) RP (* her definerer vi funktion f, med lP som holder parameter listen til functionen og RP. *)
   COLON s = suite (* suite er en block af kode så s er altså selve indholdet til funktionen*)
-   {(f, x, s)} (* skal vi inkoperere return her? det behøver man jo ikke altid så det skal nok defineresin the interpreter or something*)
+   {f, x, s} (* skal vi inkoperere return her? det behøver man jo ikke altid så det skal nok defineresin the interpreter or something*)
 ; 
 
 expr:
@@ -52,7 +52,7 @@ expr:
     { Eunop (Unot, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
-| DEF f = ident LP e = separated_list(COMMA, expr) RP (*definerer functionen*)
+| f = ident LP e = separated_list(COMMA, expr) RP (*definerer functionen*)
     {Ecall (f,e)}
 | LP e = expr RP
     { e }
