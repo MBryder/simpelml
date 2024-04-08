@@ -12,4 +12,5 @@ for i = 1 in 10:
     print("Loop iteration: ", i)
 test = [1,1,1]
 test[0] = 3
+test.pop
 print(test)

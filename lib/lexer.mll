@@ -21,6 +21,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
+       "pop", POP;
      ];
    fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det*)
 
@@ -71,6 +72,7 @@ rule next_tokens = parse
   | '['     { [LSQ] }
   | ']'     { [RSQ] }
   | ','     { [COMMA] }
+  | '.'     { [DOT] }
   | ':'     { [COLON] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
@@ -125,6 +127,7 @@ let token_to_string = function
     | LSQ -> "LSQ"
     | RSQ -> "RSQ"
     | COMMA -> "COMMA"
+    | DOT -> "DOT"
     | COLON -> "COLON"
     | CST cst ->
         begin match cst with
