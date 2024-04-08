@@ -44,6 +44,28 @@ let rec print_values vl = match vl with
     print_string " ";
     print_values vtl
 
+(* Transpose a matrix implementation. *)
+let transpose (matrix: value array) : value array =
+  match matrix with
+  | [||] -> [||]
+  | _ ->
+    let height = Array.length matrix in
+    let width = match matrix.(0) with
+      | Vlist l -> Array.length l
+      | _ -> error "wrong type: matrix must be a list of lists!"
+    in
+    let result = Array.init width (fun _ -> Vlist (Array.make height (Vint 0))) in
+    for i = 0 to height - 1 do
+      match matrix.(i) with
+      | Vlist row ->
+        for j = 0 to width - 1 do
+          match result.(j) with
+          | Vlist column -> column.(i) <- row.(j)
+          | _ -> error "wrong type: matrix must be a list of lists!"
+        done
+      | _ -> error "wrong type: matrix must be a list of lists!"
+    done;
+    result
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -89,6 +111,11 @@ and interp_unop ctx op e1 =
     begin match v1 with
       |  Vbool b1 -> Vbool (not b1)
       | _ -> error "wring unary operand type: argument must be of Boolean type!"
+    end
+  | Utrans ->
+    begin match v1 with
+      | Vlist l -> Vlist (transpose l)
+      | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
 
 

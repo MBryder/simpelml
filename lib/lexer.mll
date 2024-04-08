@@ -10,7 +10,6 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
 
   exception Lexing_error of string
 
-
   let id_or_kwd =
     let h = Hashtbl.create 32 in (* bare et hashtabel h med length 32 *)
     List.iter (fun (s, tok) -> Hashtbl.add h s tok) (* her løber vi faktisk listen igennem der består af par med strings s og korresponderende tokens tok, 
@@ -72,6 +71,7 @@ rule next_tokens = parse
   | ']'     { [RSQ] }
   | ','     { [COMMA] }
   | ':'     { [COLON] }
+  | "^T"    { [TRANS] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
@@ -109,6 +109,7 @@ let token_to_string = function
     | TIMES -> "TIMES"
     | DIV -> "DIV"
     | MOD -> "MOD"
+    | TRANS -> "TRANS"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with
