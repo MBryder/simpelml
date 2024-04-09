@@ -58,6 +58,7 @@
      | Sfor of ident * expr * expr * stmt (* for loop *)
      | Sincr of ident
      | Sdecr of ident
+     | Spush of expr * expr
      | Slist_assign of expr * expr * expr  (* New statement type: array, index, new value *)
      | Sreturn of expr                 (* til funktion*)
      | Seval of expr  

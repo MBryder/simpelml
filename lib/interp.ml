@@ -100,8 +100,7 @@ let rec interp_expr ctx = function
       | Vlist l ->
         let i = expr_int ctx e2 in
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
-| _ -> error "list expected" end
-
+    | _ -> error "list expected" end
   | Eident {id} -> try Hashtbl.find ctx id with _ -> error "not found"
 
 
@@ -288,6 +287,21 @@ and stmt ctx = function (* den her er gul fordi den mangler Sreturn _|Seval _|Ss
       | (_, Vint _) -> error "First expression must be a list"
       | (_, _) -> error "Second expression must be an integer"
     end
+  | Spush (arr_expr, new_val_expr) ->
+    begin
+      match interp_expr ctx arr_expr with
+      | Vlist arr ->
+          let new_val = interp_expr ctx new_val_expr in
+          let new_array = Array.append arr [|new_val|] in
+          begin
+            match arr_expr with
+            | Eident { id } ->
+                Hashtbl.replace ctx id (Vlist new_array)  (* Update the list in the context *)
+            | _ -> error "Must be a list"
+          end
+      | _ -> error "Must be a list"
+    end
+    
   | Sreturn _ -> failwith "Return statement not yet implemented"
 
 and block ctx = function
