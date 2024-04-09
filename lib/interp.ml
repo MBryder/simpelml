@@ -217,7 +217,7 @@ and stmt ctx = function (* den her er gul fordi den mangler Sreturn _|Seval _|Ss
         end
       in
       loop start_val                       (* Start the loop *)
-  | Sreturn _ -> failwith "Return statement not yet implemented"
+  | Sreturn e -> raise (Return (interp_expr ctx e)) (* raise kan også bruges til at kontrollere flowet i en return i OCaml, og er ik kun en error ting*)
 
 and block ctx = function
   | [] -> ()
@@ -231,5 +231,4 @@ let file (dl, s) =
    List.iter
     (fun (f,args,body) -> Hashtbl.add functions f.id (args, body)) dl;
   stmt (Hashtbl.create 16) s
-
 

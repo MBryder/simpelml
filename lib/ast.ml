@@ -42,7 +42,7 @@
      | Eget of expr * expr                (* e1[e2] *)
      | Ecall of ident * expr list (*funktionskald med parametre*)
      
-     
+
    
    (* Statements. *)
    type stmt =
@@ -55,7 +55,9 @@
      | Sreturn of expr                 (* til funktion*)
      | Seval of expr  
 
-  and def = ident * ident list * stmt (*definerer function *)
+  and def = ident * ident list * stmt(*definerer function *)
+
+     
 
   (* i mini-python står der det her: and file = def list * stmt, og ikke type file = stm *)
    (* a program is simply a statement. *)

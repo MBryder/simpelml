@@ -3,10 +3,17 @@ def test(i):
 
 def tester(i):
     for x = 0 in 5:
-        print(i)
+        print(i) 
+    y = 10
+    return y
 
 print("Start")
 k = [1,2,3,4]
 test(4)
-tester("hej")
+tester("det her er et loop")
+
+print(tester("parameter"))
+
+print("Afsluttet")
+
 
