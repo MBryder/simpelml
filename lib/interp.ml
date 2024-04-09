@@ -80,7 +80,6 @@ let mtimes (a: value array) (b: value array) : value array =
     else
       let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
       for i = 0 to a_rows - 1 do
-  | _ -> error "Matrix elements must be arrays"
   match a.(i) with
   | Vlist ai ->
     for j = 0 to b_cols - 1 do
