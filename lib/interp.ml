@@ -97,6 +97,36 @@ let transpose (matrix: value array) : value array =
 done;
 result
 
+(* Invert matrix implementation *)
+let invert (v: value array) : value array =
+  let matrix = Array.map (function Vlist row -> row | _ -> error "Matrix elements must be arrays") v in
+  let n = Array.length matrix in
+  let matrix = Array.map (Array.map (function Vint x -> float_of_int x | _ -> error "Matrix elements must be integers")) matrix in
+  let id = Array.init n (fun i -> Array.init n (fun j -> if i = j then 1. else 0.)) in
+
+  for i = 0 to n - 1 do
+    let pivot = matrix.(i).(i) in
+    if pivot = 0. then error "Matrix is not invertible";
+
+    (* Scale the pivot row *)
+    for j = 0 to n - 1 do
+      matrix.(i).(j) <- matrix.(i).(j) /. pivot;
+      id.(i).(j) <- id.(i).(j) /. pivot;
+    done;
+
+    (* Eliminate other rows *)
+    for j = 0 to n - 1 do
+      if i <> j then
+        let factor = matrix.(j).(i) in
+        for k = 0 to n - 1 do
+          matrix.(j).(k) <- matrix.(j).(k) -. factor *. matrix.(i).(k);
+          id.(j).(k) <- id.(j).(k) -. factor *. id.(i).(k);
+        done;
+    done;
+  done;
+
+  Array.map (fun row -> Vlist (Array.map (fun x -> Vint (int_of_float x)) row)) id
+
 
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
@@ -148,6 +178,11 @@ and interp_unop ctx op e1 =
     begin match v1 with
       | Vlist l -> Vlist (transpose l)
       | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
+  | Uinv ->
+    begin match v1 with
+    | Vlist l -> Vlist (invert l)
+    | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
 
 

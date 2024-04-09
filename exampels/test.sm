@@ -39,4 +39,10 @@ print(imar3)
 hans3 = sigurd3 M* imar3
 print(hans3)
 
+print(        )
 
+imar4 = [[1,2], [3,4]]
+sigurd4 = imar4.inv
+print(sigurd4.inv)
+
+print(        )

@@ -73,6 +73,7 @@ rule next_tokens = parse
   | ':'     { [COLON] }
   | "^T"    { [TRANS] }
   | "M*"    { [MTIMES] }
+  | ".inv"  { [INV] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
@@ -112,6 +113,7 @@ let token_to_string = function
     | MOD -> "MOD"
     | TRANS -> "TRANS"
     | MTIMES -> "MTIMES"
+    | INV -> "INV"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with

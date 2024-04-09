@@ -23,6 +23,7 @@
      | Uneg (* -e *)
      | Unot (* not e *)
      | Utrans (* trans e *)
+     | Uinv (* inv e *)
    
    (* Binary operators. *)
    type binop =
