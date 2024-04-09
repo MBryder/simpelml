@@ -9,5 +9,3 @@ print(array)
 array.pop
 print(array)
 
-i = 1.45
-print(i)
