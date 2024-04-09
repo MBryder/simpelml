@@ -22,8 +22,8 @@
    type unop =
      | Uneg (* -e *)
      | Unot (* not e *)
-     | Utrans (* trans e *)
-     | Uinv (* inv e *)
+     | Utrans (* e^T *)
+     | Uinv (* e.inv *)
    
    (* Binary operators. *)
    type binop =
