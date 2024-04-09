@@ -72,6 +72,7 @@ rule next_tokens = parse
   | ','     { [COMMA] }
   | ':'     { [COLON] }
   | "^T"    { [TRANS] }
+  | ".pop"  { [POP] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
