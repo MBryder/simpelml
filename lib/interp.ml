@@ -69,33 +69,42 @@ let transpose (matrix: value array) : value array =
 
     (* Mtimes implementation. *)
     let mtimes (a: value array) (b: value array) : value array =
-      match a.(0), b.(0) with
-      | Vlist a0, Vlist b0 ->
-        let a_rows = Array.length a in
-        let a_cols = Array.length a0 in
-        let b_rows = Array.length b in
-        let b_cols = Array.length b0 in
-        if a_cols <> b_rows then
-          error "Incompatible matrix dimensions for multiplication"
-        else
-          let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
-          for i = 0 to a_rows - 1 do
-  match a.(i) with
-  | Vlist ai ->
-    for j = 0 to b_cols - 1 do
-      let sum = ref 0 in
-      for k = 0 to a_cols - 1 do
-        match ai.(k), (match b.(k) with Vlist row -> row | _ -> error "Matrix elements must be arrays").(j) with
-        | Vint ak, Vint bk -> sum := !sum + ak * bk
-        | _ -> error "Matrix elements must be integers"
-      done;
-      match result.(i) with
-      | Vlist res -> res.(j) <- Vint !sum
-      | _ -> error "Matrix elements must be arrays"
-    done
-  | _ -> error "Matrix elements must be arrays"
-done;
-result
+      let a_rows = Array.length a in
+      let a_cols = match a.(0) with Vlist a0 -> Array.length a0 | _ -> error "Matrix elements must be arrays" in
+      let b_rows = Array.length b in
+      let b_cols = match b.(0) with Vlist b0 -> Array.length b0 | _ -> error "Matrix elements must be arrays" in
+      if a_cols <> b_rows then
+        error "Incompatible matrix dimensions for multiplication"
+      else
+        let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
+        let rec multiply i j k sum =
+          if k = a_cols then
+            match result.(i) with
+            | Vlist res -> res.(j) <- Vint sum
+            | _ -> error "Matrix elements must be arrays"
+          else
+            match a.(i), b.(k) with
+            | Vlist ai, Vlist bk ->
+              let ak = match ai.(k) with Vint x -> x | _ -> error "Matrix elements must be integers" in
+              let bk = match bk.(j) with Vint x -> x | _ -> error "Matrix elements must be integers" in
+              multiply i j (k + 1) (sum + ak * bk)
+            | _ -> error "Matrix elements must be arrays"
+        in
+        let rec multiply_row i j =
+          if j = b_cols then ()
+          else (
+            multiply i j 0 0;
+            multiply_row i (j + 1)
+          )
+        in
+        let rec multiply_matrix i =
+          if i = a_rows then result
+          else (
+            multiply_row i 0;
+            multiply_matrix (i + 1)
+          )
+        in
+        multiply_matrix 0
 
 (* Invert matrix implementation *)
 let invert (v: value array) : value array =
