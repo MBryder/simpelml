@@ -10,8 +10,8 @@ som altså giver os en hierakisk forståelse af kildekoden */
 
 %token <Ast.constant> CST
 %token <Ast.binop> CMP
-%token <string> IDENT
-%token IF ELSE PRINT WHILE FOR IN AND OR NOT
+%token <string> IDENT 
+%token DEF RETURN FUNC IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD TRANS POP
@@ -33,9 +33,15 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %%
 
 file:
-| NEWLINE? b = nonempty_list(stmt) NEWLINE? EOF
-    { Sblock b }
+| NEWLINE? dl =list(def) b = nonempty_list(stmt) NEWLINE? EOF
+    { dl, Sblock b }
 ;
+
+def: 
+| DEF f = ident LP x = separated_list(COMMA, ident) RP (* her definerer vi funktion f, med lP som holder parameter listen til functionen og RP. *)
+  COLON s = suite (* suite er en block af kode så s er altså selve indholdet til funktionen*)
+   {f, x, s} (* skal vi inkoperere return her? det behøver man jo ikke altid så det skal nok defineresin the interpreter or something*)
+; 
 
 expr:
 | c = CST
@@ -54,6 +60,8 @@ expr:
     { Eunop (Upop, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
+| f = ident LP e = separated_list(COMMA, expr) RP
+    {Ecall (f,e)}
 | LP e = expr RP
     { e }
 | LSQ l = separated_list(COMMA, expr) RSQ
@@ -83,6 +91,8 @@ stmt:
 ;
 
 simple_stmt:
+| RETURN e = expr 
+    {Sreturn e}
 | id = ident EQUAL e = expr
     { Sassign (id, e) }
 | id = ident PLUS PLUS
@@ -93,6 +103,8 @@ simple_stmt:
     { Sassign (id, Ebinop (Badd, Eident id, e)) }
 | PRINT LP el = separated_list(COMMA, expr) RP
     { Sprint el }
+| e = expr
+    { Seval e }
 ;
 
 %inline binop:
