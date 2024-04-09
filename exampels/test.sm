@@ -49,6 +49,5 @@ print(        )
 
 imar4 = [[1,2], [3,4]]
 sigurd4 = imar4.inv
-print(sigurd4.inv)
-
+print(sigurd4)
 print(        )
