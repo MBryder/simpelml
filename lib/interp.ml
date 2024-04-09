@@ -66,6 +66,12 @@ let transpose (matrix: value array) : value array =
       | _ -> error "wrong type: matrix must be a list of lists!"
     done;
     result
+  
+let update_context ctx e1 new_array =
+  match e1 with
+  | Eident { id } ->
+    Hashtbl.replace ctx id (Vlist new_array)
+  | _ -> error "pop operation is not supported on this type of expression"
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -116,6 +122,19 @@ and interp_unop ctx op e1 =
     begin match v1 with
       | Vlist l -> Vlist (transpose l)
       | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
+  | Upop ->
+    begin match interp_expr ctx e1 with
+      | Vlist l when Array.length l > 0 ->
+        let last_index = Array.length l - 1 in
+        let popped = l.(last_index) in
+        let new_array = Array.sub l 0 last_index in (* Create a new array without the last element *)
+        begin
+          update_context ctx e1 new_array; (* This function needs to update the context *)
+          popped
+        end
+      | Vlist _ -> error "pop from an empty list"
+      | _ -> error "pop operation on a non-list type"
     end
 
 

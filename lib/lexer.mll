@@ -111,6 +111,7 @@ let token_to_string = function
     | DIV -> "DIV"
     | MOD -> "MOD"
     | TRANS -> "TRANS"
+    | POP -> "POP"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with

@@ -14,11 +14,11 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS
+%token PLUS MINUS TIMES DIV MOD TRANS POP
 
 /* priorities and associativities */
 
-%nonassoc TRANS
+%nonassoc TRANS POP
 %left OR
 %left AND
 %nonassoc NOT
@@ -50,6 +50,8 @@ expr:
     { Eunop (Unot, e1) }
 | e1 = expr TRANS
     { Eunop (Utrans, e1) }
+| e1 = expr POP
+    { Eunop (Upop, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
 | LP e = expr RP

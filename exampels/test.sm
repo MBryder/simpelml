@@ -12,7 +12,9 @@ m--
 for i = 1 in 10:
     print("Loop iteration: ", i)
 test = [1,1,1]
+print(test)
 test[0] = 3
+test.pop
 print(test)
 u = [[2],[3]]
 print(u)
