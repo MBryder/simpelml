@@ -105,12 +105,12 @@ and interp_unop ctx op e1 =
     let v1 = interp_expr ctx e1 in
     begin match v1 with
       | Vint n1 -> Vint (-n1)
-      | _ -> error "wring unary operand type: argument must be of integer type!"
+      | _ -> error "wrong unary operand type: argument must be of integer type!"
     end
   | Unot ->
     begin match v1 with
       |  Vbool b1 -> Vbool (not b1)
-      | _ -> error "wring unary operand type: argument must be of Boolean type!"
+      | _ -> error "wrong unary operand type: argument must be of Boolean type!"
     end
   | Utrans ->
     begin match v1 with
