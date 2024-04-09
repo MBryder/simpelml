@@ -40,7 +40,7 @@
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
      | Eget of expr * expr                (* e1[e2] *)
-     | Ecall of ident * expr list (*funktionskald med parametre*)
+     | Ecall of ident * expr list         (*funktionskald med parametre*)
      
 
    
@@ -53,7 +53,7 @@
      | Swhile of expr * stmt           (* while loop *)
      | Sfor of ident * expr * expr * stmt (* for loop *)
      | Sreturn of expr                 (* til funktion*)
-     | Seval of expr  
+     | Seval of expr                    
 
   and def = ident * ident list * stmt(*definerer function *)
 

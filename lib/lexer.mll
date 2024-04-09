@@ -17,7 +17,6 @@
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
-       "Func", FUNC; (* muligvis slette func hvis def er vores function*)
        "return", RETURN; 
        "def", DEF 
 ;      ];
@@ -132,7 +131,6 @@ let token_to_string = function
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end
     | IDENT id -> "IDENT " ^ id (* ID til functionen (altså navnet på funktionen*)
-    | FUNC -> "FUNC" (*func it up *)
     | RETURN -> "RETURN"
     | DEF -> "DEF" (*bare nøgleord til at definere funktionen*)
     | IF -> "IF"
