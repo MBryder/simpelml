@@ -21,7 +21,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
      ];
-   fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det*)
+   fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det *)
 
   let string_buffer = Buffer.create 1024 (* preallokere hukommelse *)
 
@@ -72,6 +72,8 @@ rule next_tokens = parse
   | ','     { [COMMA] }
   | ':'     { [COLON] }
   | "^T"    { [TRANS] }
+  | "M*"    { [MTIMES] }
+  | ".inv"  { [INV] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
@@ -110,6 +112,8 @@ let token_to_string = function
     | DIV -> "DIV"
     | MOD -> "MOD"
     | TRANS -> "TRANS"
+    | MTIMES -> "MTIMES"
+    | INV -> "INV"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with

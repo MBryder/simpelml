@@ -65,7 +65,69 @@ let transpose (matrix: value array) : value array =
         done
       | _ -> error "wrong type: matrix must be a list of lists!"
     done;
-    result
+    result  
+
+    (* Mtimes implementation. *)
+    let mtimes (a: value array) (b: value array) : value array =
+      match a.(0), b.(0) with
+      | Vlist a0, Vlist b0 ->
+        let a_rows = Array.length a in
+        let a_cols = Array.length a0 in
+        let b_rows = Array.length b in
+        let b_cols = Array.length b0 in
+        if a_cols <> b_rows then
+          error "Incompatible matrix dimensions for multiplication"
+        else
+          let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
+          for i = 0 to a_rows - 1 do
+  match a.(i) with
+  | Vlist ai ->
+    for j = 0 to b_cols - 1 do
+      let sum = ref 0 in
+      for k = 0 to a_cols - 1 do
+        match ai.(k), (match b.(k) with Vlist row -> row | _ -> error "Matrix elements must be arrays").(j) with
+        | Vint ak, Vint bk -> sum := !sum + ak * bk
+        | _ -> error "Matrix elements must be integers"
+      done;
+      match result.(i) with
+      | Vlist res -> res.(j) <- Vint !sum
+      | _ -> error "Matrix elements must be arrays"
+    done
+  | _ -> error "Matrix elements must be arrays"
+done;
+result
+
+(* Invert matrix implementation *)
+let invert (v: value array) : value array =
+  let matrix = Array.map (function Vlist row -> row | _ -> error "Matrix elements must be arrays") v in
+  let n = Array.length matrix in
+  let matrix = Array.map (Array.map (function Vint x -> float_of_int x | _ -> error "Matrix elements must be integers")) matrix in
+  let id = Array.init n (fun i -> Array.init n (fun j -> if i = j then 1. else 0.)) in
+
+  for i = 0 to n - 1 do
+    let pivot = matrix.(i).(i) in
+    if pivot = 0. then error "Matrix is not invertible";
+
+    (* Scale the pivot row *)
+    for j = 0 to n - 1 do
+      matrix.(i).(j) <- matrix.(i).(j) /. pivot;
+      id.(i).(j) <- id.(i).(j) /. pivot;
+    done;
+
+    (* Eliminate other rows *)
+    for j = 0 to n - 1 do
+      if i <> j then
+        let factor = matrix.(j).(i) in
+        for k = 0 to n - 1 do
+          matrix.(j).(k) <- matrix.(j).(k) -. factor *. matrix.(i).(k);
+          id.(j).(k) <- id.(j).(k) -. factor *. id.(i).(k);
+        done;
+    done;
+  done;
+
+  Array.map (fun row -> Vlist (Array.map (fun x -> Vint (int_of_float x)) row)) id
+
+
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -117,12 +179,18 @@ and interp_unop ctx op e1 =
       | Vlist l -> Vlist (transpose l)
       | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
+  | Uinv ->
+    begin match v1 with
+    | Vlist l -> Vlist (invert l)
+    | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
 
 
 (* Interpreting binary operations. *)
 and interp_binop ctx op e1 e2 =
   match op with
   | Badd | Bsub | Bmul | Bdiv | Bmod -> interp_binop_arith ctx op e1 e2
+  | Bmtimes -> interp_binop_matrix ctx op e1 e2
   | _ (* all other cases *) ->  interp_binop_bool ctx op e1 e2
 
 
@@ -142,8 +210,17 @@ and interp_binop_arith ctx op e1 e2 =
         | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
         | _ -> assert false (* other operations excluded by asssumption. *)
     end
-  | _ -> error "wring operand type: arguments must be of integer type!"
+    | _ -> error "wring operand type: arguments must be of integer type!"
 
+and interp_binop_matrix ctx op e1 e2 = 
+  let v1 = interp_expr ctx e1 in
+  let v2 = interp_expr ctx e2 in
+  match v1, v2 with
+  | Vlist a, Vlist b ->
+    begin match op with
+      | Bmtimes -> Vlist (mtimes a b)
+      | _ -> assert false
+    end
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating
