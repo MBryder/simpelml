@@ -11,7 +11,7 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token <Ast.constant> CST
 %token <Ast.binop> CMP
 %token <string> IDENT
-%token IF ELSE PRINT WHILE FOR IN AND OR NOT ELIF
+%token IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD TRANS
@@ -48,7 +48,7 @@ expr:
     { Eunop (Uneg, e1) }
 | NOT e1 = expr
     { Eunop (Unot, e1) }
-| e1 = expr TRANS %prec TRANS
+| e1 = expr TRANS
     { Eunop (Utrans, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
