@@ -77,14 +77,14 @@ let transpose (matrix: value array) : value array =
         if a_cols <> Array.length b then
           error "Incompatible matrix dimensions for multiplication"
         else
-          let result = Array.make_matrix a_rows b_cols (Vint 0) in
+          let result = Array.make a_rows (Vlist (Array.make b_cols (Vint 0))) in
           for i = 0 to a_rows - 1 do
             match a.(i), b.(i) with
             | Vlist ai, Vlist bi ->
               for j = 0 to b_cols - 1 do
                 for k = 0 to a_cols - 1 do
-                  match result.(i).(j), ai.(k), bi.(k) with
-                  | Vint res, Vint ak, Vint bk -> result.(i).(j) <- Vint (res + ak * bk)
+                  match result.(i), ai.(k), bi.(k) with
+                  | Vlist res, Vint ak, Vint bk -> res.(j) <- Vint ((match res.(j) with Vint v -> v | _ -> 0) + ak * bk)
                   | _ -> error "Matrix elements must be integers"
                 done
               done
@@ -151,6 +151,7 @@ and interp_unop ctx op e1 =
 and interp_binop ctx op e1 e2 =
   match op with
   | Badd | Bsub | Bmul | Bdiv | Bmod -> interp_binop_arith ctx op e1 e2
+  | Bmtimes -> interp_binop_matrix ctx op e1 e2
   | _ (* all other cases *) ->  interp_binop_bool ctx op e1 e2
 
 
@@ -169,15 +170,18 @@ and interp_binop_arith ctx op e1 e2 =
         | Bmod -> Vint (n1 mod n2)
         | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
         | _ -> assert false (* other operations excluded by asssumption. *)
-        | _ -> error "wring operand type: arguments must be of integer type!"
     end
-  | Vlist l1, Vlist l2 ->
-    begin match op with
-      | Bmtimes -> Vlist (mtimes l1 l2)
-      | _ -> error "wrong operand type: arguments must be of list of lists type!"
-    end
-  
+    | _ -> error "wring operand type: arguments must be of integer type!"
 
+and interp_binop_matrix ctx op e1 e2 = 
+  let v1 = interp_expr ctx e1 in
+  let v2 = interp_expr ctx e2 in
+  match v1, v2 with
+  | Vlist a, Vlist b ->
+    begin match op with
+      | Bmtimes -> Vlist (mtimes a b)
+      | _ -> assert false
+    end
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating
