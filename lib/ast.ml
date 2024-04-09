@@ -26,7 +26,7 @@
    
    (* Binary operators. *)
    type binop =
-     | Badd | Bsub | Bmul | Bdiv | Bmod    (* + - * // % *)
+     | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes   (* + - * // % *)
      | Beq | Bneq | Blt | Ble | Bgt | Bge  (* == != < <= > >= *)
      | Band | Bor                          (* and or *)
    

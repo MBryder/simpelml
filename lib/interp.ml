@@ -66,6 +66,34 @@ let transpose (matrix: value array) : value array =
       | _ -> error "wrong type: matrix must be a list of lists!"
     done;
     result
+
+    (* Mtimes implementation. *)
+    let mtimes (a: value array) (b: value array) : value array =
+      match a.(0), b.(0) with
+      | Vlist a0, Vlist b0 ->
+        let a_rows = Array.length a in
+        let a_cols = Array.length a0 in
+        let b_cols = Array.length b0 in
+        if a_cols <> Array.length b then
+          error "Incompatible matrix dimensions for multiplication"
+        else
+          let result = Array.make_matrix a_rows b_cols (Vint 0) in
+          for i = 0 to a_rows - 1 do
+            match a.(i), b.(i) with
+            | Vlist ai, Vlist bi ->
+              for j = 0 to b_cols - 1 do
+                for k = 0 to a_cols - 1 do
+                  match result.(i).(j), ai.(k), bi.(k) with
+                  | Vint res, Vint ak, Vint bk -> result.(i).(j) <- Vint (res + ak * bk)
+                  | _ -> error "Matrix elements must be integers"
+                done
+              done
+            | _ -> error "Matrix elements must be arrays"
+          done;
+          result
+      | _ -> error "First elements must be arrays"
+
+
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -141,8 +169,14 @@ and interp_binop_arith ctx op e1 e2 =
         | Bmod -> Vint (n1 mod n2)
         | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
         | _ -> assert false (* other operations excluded by asssumption. *)
+        | _ -> error "wring operand type: arguments must be of integer type!"
     end
-  | _ -> error "wring operand type: arguments must be of integer type!"
+  | Vlist l1, Vlist l2 ->
+    begin match op with
+      | Bmtimes -> Vlist (mtimes l1 l2)
+      | _ -> error "wrong operand type: arguments must be of list of lists type!"
+    end
+  
 
 
 (* Interpreting binary operations returning a Boolean value. *)

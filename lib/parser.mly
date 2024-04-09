@@ -14,17 +14,17 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token IF ELSE PRINT WHILE FOR IN AND OR NOT ELIF
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS
+%token PLUS MINUS TIMES DIV MOD TRANS MTIMES
 
 /* priorities and associativities */
 
-%nonassoc TRANS
+%nonassoc TRANS 
 %left OR
 %left AND
 %nonassoc NOT
 %nonassoc CMP
 %left PLUS MINUS
-%left TIMES DIV MOD
+%left TIMES DIV MOD MTIMES
 %nonassoc unary_minus
 
 %start file
@@ -102,6 +102,7 @@ simple_stmt:
 | c=CMP { c    }
 | AND   { Band }
 | OR    { Bor  }
+| MTIMES { Bmtimes }
 ;
 
 ident:
