@@ -48,6 +48,7 @@ let letter = ['a'-'z' 'A'-'Z']
 let digit = ['0'-'9']
 let ident = (letter | '_') (letter | digit | '_')*
 let integer = '0' | ['1'-'9'] digit*
+let float = integer "." integer 
 let space = ' ' | '\t'
 let comment = "#" [^'\n']*
 
@@ -77,9 +78,10 @@ rule next_tokens = parse
   | "^T"    { [TRANS] }
   | ".pop"  { [POP] }
   | ".push" { [PUSH] }
+  | ".len"  { [LEN] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
-              with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
+              with _ -> raise (Lexing_error ("constant too large: " ^ s)) }          
   | '"'     { [CST (Cstring (string lexbuf))] }
   | eof     { NEWLINE :: unindent 0 @ [EOF] }
   | _ as c  { raise (Lexing_error ("illegal character: " ^ String.make 1 c)) }

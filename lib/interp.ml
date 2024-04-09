@@ -48,6 +48,12 @@ let rec print_values vl = match vl with
     print_string " ";
     print_values vtl
 
+(* ************************************************************************** *)
+(*                          Interpreting expressions                          *)
+(* ************************************************************************** *)
+
+let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
+
 (* Transpose a matrix implementation. *)
 let transpose (matrix: value array) : value array =
   match matrix with
@@ -76,11 +82,7 @@ let update_context ctx e1 new_array =
   | Eident { id } ->
     Hashtbl.replace ctx id (Vlist new_array)
   | _ -> error "pop operation is not supported on this type of expression"
-(* ************************************************************************** *)
-(*                          Interpreting expressions                          *)
-(* ************************************************************************** *)
 
-let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function
@@ -148,6 +150,11 @@ and interp_unop ctx op e1 =
         end
       | Vlist _ -> error "pop from an empty list"
       | _ -> error "pop operation on a non-list type"
+    end
+  | Ulen ->
+    begin match interp_expr ctx e1 with
+      | Vlist l -> Vint (Array.length l)
+      | _ -> error "length operation on a non-list type"
     end
 
 

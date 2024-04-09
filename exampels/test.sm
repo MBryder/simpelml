@@ -1,29 +1,13 @@
 def tester(i):
     print(i, "from the function")
-    print("hej")
 
-print("1 + 2")
-print("1 + 2")
-print("1 + 2")
-o = [[1,2,3],[4,5,6]]
-print(o)
-o^T
-print(o)
-m = 3
-m++
-m--
-#print(wwwwwwwwwwwwwwwwwwwww)
-for i = 1 in 10:
-    print("Loop iteration: ", i)
-test = [1,1,1]
-test.push(5)
-print(test)
-test[0] = 3
-print(test)
-print(test.pop)
-test.pop
-print(test)
-u = [[2],[3]]
-print(u)
-tester(u)
-tester(test)
+array = [1,2,3,4,5,6]
+print(array)
+print(array.len)
+array.push(7)
+print(array)
+array.pop
+print(array)
+
+i = 1.45
+print(i)

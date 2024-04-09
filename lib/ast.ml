@@ -24,6 +24,7 @@
      | Unot (* not e *)
      | Utrans (* e^T *)
      | Upop   (* e.pop() *)
+     | Ulen   (* e.len *)
    (* Binary operators. *)
    type binop =
      | Badd | Bsub | Bmul | Bdiv | Bmod    (* + - * // % *)
