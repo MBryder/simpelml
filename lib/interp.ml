@@ -67,19 +67,20 @@ let transpose (matrix: value array) : value array =
     done;
     result  
 
-    (* Mtimes implementation. *)
-    let mtimes (a: value array) (b: value array) : value array =
-      match a.(0), b.(0) with
-      | Vlist a0, Vlist b0 ->
-        let a_rows = Array.length a in
-        let a_cols = Array.length a0 in
-        let b_rows = Array.length b in
-        let b_cols = Array.length b0 in
-        if a_cols <> b_rows then
-          error "Incompatible matrix dimensions for multiplication"
-        else
-          let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
-          for i = 0 to a_rows - 1 do
+(* Mtimes implementation. *)
+let mtimes (a: value array) (b: value array) : value array =
+  match a.(0), b.(0) with
+  | Vlist a0, Vlist b0 ->
+    let a_rows = Array.length a in
+    let a_cols = Array.length a0 in
+    let b_rows = Array.length b in
+    let b_cols = Array.length b0 in
+    if a_cols <> b_rows then
+      error "Incompatible matrix dimensions for multiplication"
+    else
+      let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
+      for i = 0 to a_rows - 1 do
+  | _ -> error "Matrix elements must be arrays"
   match a.(i) with
   | Vlist ai ->
     for j = 0 to b_cols - 1 do
