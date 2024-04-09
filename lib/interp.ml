@@ -65,7 +65,7 @@ let transpose (matrix: value array) : value array =
         done
       | _ -> error "wrong type: matrix must be a list of lists!"
     done;
-    result
+    result  
 
     (* Mtimes implementation. *)
     let mtimes (a: value array) (b: value array) : value array =
@@ -73,25 +73,29 @@ let transpose (matrix: value array) : value array =
       | Vlist a0, Vlist b0 ->
         let a_rows = Array.length a in
         let a_cols = Array.length a0 in
+        let b_rows = Array.length b in
         let b_cols = Array.length b0 in
-        if a_cols <> Array.length b then
+        if a_cols <> b_rows then
           error "Incompatible matrix dimensions for multiplication"
         else
-          let result = Array.make a_rows (Vlist (Array.make b_cols (Vint 0))) in
+          let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
           for i = 0 to a_rows - 1 do
-            match a.(i), b.(i) with
-            | Vlist ai, Vlist bi ->
-              for j = 0 to b_cols - 1 do
-                for k = 0 to a_cols - 1 do
-                  match result.(i), ai.(k), bi.(k) with
-                  | Vlist res, Vint ak, Vint bk -> res.(j) <- Vint ((match res.(j) with Vint v -> v | _ -> 0) + ak * bk)
-                  | _ -> error "Matrix elements must be integers"
-                done
-              done
-            | _ -> error "Matrix elements must be arrays"
-          done;
-          result
-      | _ -> error "First elements must be arrays"
+  match a.(i) with
+  | Vlist ai ->
+    for j = 0 to b_cols - 1 do
+      let sum = ref 0 in
+      for k = 0 to a_cols - 1 do
+        match ai.(k), (match b.(k) with Vlist row -> row | _ -> error "Matrix elements must be arrays").(j) with
+        | Vint ak, Vint bk -> sum := !sum + ak * bk
+        | _ -> error "Matrix elements must be integers"
+      done;
+      match result.(i) with
+      | Vlist res -> res.(j) <- Vint !sum
+      | _ -> error "Matrix elements must be arrays"
+    done
+  | _ -> error "Matrix elements must be arrays"
+done;
+result
 
 
 (* ************************************************************************** *)

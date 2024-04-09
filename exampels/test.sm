@@ -23,4 +23,20 @@ print(imar)
 hans = sigurd M* imar
 print(hans)
 
+sigurd2 = [[1,2,3], [4,5,6]]
+imar2 = [[1,2], [3,4], [5,6]]
+print(sigurd2)
+print(imar2)
+
+hans2 = sigurd2 M* imar2
+print(hans2)
+
+sigurd3 = [[1,2], [3,4], [5,6]]
+imar3 = [[1,2], [3,4]]
+print(sigurd3)
+print(imar3)
+
+hans3 = sigurd3 M* imar3
+print(hans3)
+
 
