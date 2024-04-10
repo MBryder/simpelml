@@ -78,6 +78,9 @@ rule next_tokens = parse
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
   | '"'     { [CST (Cstring (string lexbuf))] }
+  | ['0'-'9']+ '.' ['0'-'9']* as s
+  { try [CST (Cfloat (float_of_string s))]
+    with _ -> raise (Lexing_error ("invalid float: " ^ s)) }
   | eof     { NEWLINE :: unindent 0 @ [EOF] }
   | _ as c  { raise (Lexing_error ("illegal character: " ^ String.make 1 c)) }
 
@@ -134,6 +137,7 @@ let token_to_string = function
     | CST cst ->
         begin match cst with
         | Cint i -> "CST (Cint " ^ string_of_int i ^ ")"
+        | Cfloat f -> "CST (Cfloat " ^ string_of_float f ^ ")"
         | Cbool b -> "CST (Cbool " ^ string_of_bool b ^ ")"
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end

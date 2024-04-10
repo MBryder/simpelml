@@ -15,6 +15,7 @@ let error s = raise (Error s)
 type value =
   | Vbool of bool
   | Vint of int
+  | Vfloat of float
   | Vstring of string
   | Vlist of value array
 
@@ -27,6 +28,7 @@ let rec print_value = function
   | Vbool true -> printf "True"
   | Vbool false -> printf "False"
   | Vint n -> printf "%d" n
+  | Vfloat f -> printf "%f" f
   | Vstring s -> printf "%s" s
   | Vlist a ->
     let n = Array.length a in
@@ -54,22 +56,20 @@ let rec transpose (matrix: value array) : value array =
       | Vlist l -> Array.length l
       | _ -> error "wrong type: matrix must be a list of lists!"
     in
-    let result = Array.init width (fun _ -> Vlist (Array.make height (Vint 0))) in
-    transpose_helper matrix result 0 0 height width;
+    let result = Array.init width (fun j -> Vlist (Array.init height (fun i -> 
+      match matrix.(i) with
+      | Vlist row -> row.(j)
+      | _ -> error "wrong type: matrix must be a list of lists!"
+    ))) in
     result
-
-and transpose_helper matrix result i j height width =
-  if i >= height then ()
-  else if j >= width then transpose_helper matrix result (i + 1) 0 height width
-  else
-    match matrix.(i), result.(j) with
-    | Vlist row, Vlist column ->
-      column.(i) <- row.(j);
-      transpose_helper matrix result i (j + 1) height width
-    | _ -> error "wrong type: matrix must be a list of lists!"
 
     (* Mtimes implementation. *)
     let mtimes (a: value array) (b: value array) : value array =
+      let to_float = function
+        | Vint i -> float_of_int i
+        | Vfloat f -> f
+        | _ -> error "Matrix elements must be integers or floats"
+      in
       let a_rows = Array.length a in
       let a_cols = match a.(0) with Vlist a0 -> Array.length a0 | _ -> error "Matrix elements must be arrays" in
       let b_rows = Array.length b in
@@ -77,24 +77,24 @@ and transpose_helper matrix result i j height width =
       if a_cols <> b_rows then
         error "Incompatible matrix dimensions for multiplication"
       else
-        let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vint 0))) in
+        let result = Array.init a_rows (fun _ -> Vlist (Array.make b_cols (Vfloat 0.0))) in
         let rec multiply i j k sum =
           if k = a_cols then
             match result.(i) with
-            | Vlist res -> res.(j) <- Vint sum
+            | Vlist res -> res.(j) <- Vfloat sum
             | _ -> error "Matrix elements must be arrays"
           else
             match a.(i), b.(k) with
             | Vlist ai, Vlist bk ->
-              let ak = match ai.(k) with Vint x -> x | _ -> error "Matrix elements must be integers" in
-              let bk = match bk.(j) with Vint x -> x | _ -> error "Matrix elements must be integers" in
-              multiply i j (k + 1) (sum + ak * bk)
+              let ak = to_float ai.(k) in
+              let bk = to_float bk.(j) in
+              multiply i j (k + 1) (sum +. ak *. bk)
             | _ -> error "Matrix elements must be arrays"
         in
         let rec multiply_row i j =
           if j = b_cols then ()
           else (
-            multiply i j 0 0;
+            multiply i j 0 0.0;
             multiply_row i (j + 1)
           )
         in
@@ -109,9 +109,14 @@ and transpose_helper matrix result i j height width =
 
 (* Invert matrix implementation *)
 let invert (v: value array) : value array =
+  let to_float = function
+    | Vint i -> float_of_int i
+    | Vfloat f -> f
+    | _ -> error "Matrix elements must be integers or floats"
+  in
   let matrix = Array.map (function Vlist row -> row | _ -> error "Matrix elements must be arrays") v in
   let n = Array.length matrix in
-  let matrix = Array.map (Array.map (function Vint x -> float_of_int x | _ -> error "Matrix elements must be integers")) matrix in
+  let matrix = Array.map (Array.map (fun x -> to_float x)) matrix in
   let id = Array.init n (fun i -> Array.init n (fun j -> if i = j then 1. else 0.)) in
 
   let rec scale_pivot_row i j pivot =
@@ -155,7 +160,7 @@ let invert (v: value array) : value array =
 
   process_row 0;
 
-  Array.map (fun row -> Vlist (Array.map (fun x -> Vint (int_of_float x)) row)) id
+  Array.map (fun row -> Vlist (Array.map (fun x -> Vfloat x) row)) id
 
 
 (* ************************************************************************** *)
@@ -188,6 +193,7 @@ and interp_const = function
   | Cbool b ->  Vbool b
   | Cstring s -> Vstring s
   | Cint n -> Vint n
+  | Cfloat f -> Vfloat f
 
 (* Interpreting unary operations. *)
 and interp_unop ctx op e1 =
@@ -240,7 +246,14 @@ and interp_binop_arith ctx op e1 e2 =
         | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
         | _ -> assert false (* other operations excluded by asssumption. *)
     end
-    | _ -> error "wring operand type: arguments must be of integer type!"
+  | Vfloat f1, Vfloat f2 ->
+    begin match op with
+      | Badd -> Vfloat (f1 +. f2)
+      | Bsub -> Vfloat (f1 -. f2)
+      | Bmul -> Vfloat (f1 *. f2)
+      | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (f1 /. f2)
+    end
+    | _ -> error "wrong operand type: arguments must be of same numerical type!"
 
 and interp_binop_matrix ctx op e1 e2 = 
   let v1 = interp_expr ctx e1 in
