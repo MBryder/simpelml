@@ -45,7 +45,7 @@ let rec print_values vl = match vl with
     print_values vtl
 
 (* Transpose a matrix implementation. *)
-let transpose (matrix: value array) : value array =
+let rec transpose (matrix: value array) : value array =
   match matrix with
   | [||] -> [||]
   | _ ->
@@ -55,17 +55,18 @@ let transpose (matrix: value array) : value array =
       | _ -> error "wrong type: matrix must be a list of lists!"
     in
     let result = Array.init width (fun _ -> Vlist (Array.make height (Vint 0))) in
-    for i = 0 to height - 1 do
-      match matrix.(i) with
-      | Vlist row ->
-        for j = 0 to width - 1 do
-          match result.(j) with
-          | Vlist column -> column.(i) <- row.(j)
-          | _ -> error "wrong type: matrix must be a list of lists!"
-        done
-      | _ -> error "wrong type: matrix must be a list of lists!"
-    done;
-    result  
+    transpose_helper matrix result 0 0 height width;
+    result
+
+and transpose_helper matrix result i j height width =
+  if i >= height then ()
+  else if j >= width then transpose_helper matrix result (i + 1) 0 height width
+  else
+    match matrix.(i), result.(j) with
+    | Vlist row, Vlist column ->
+      column.(i) <- row.(j);
+      transpose_helper matrix result i (j + 1) height width
+    | _ -> error "wrong type: matrix must be a list of lists!"
 
     (* Mtimes implementation. *)
     let mtimes (a: value array) (b: value array) : value array =
@@ -113,35 +114,46 @@ let invert (v: value array) : value array =
   let matrix = Array.map (Array.map (function Vint x -> float_of_int x | _ -> error "Matrix elements must be integers")) matrix in
   let id = Array.init n (fun i -> Array.init n (fun j -> if i = j then 1. else 0.)) in
 
-  let rec scale_pivot_row i pivot =
-    for j = 0 to n - 1 do
+  let rec scale_pivot_row i j pivot =
+    if j >= n then ()
+    else begin
       matrix.(i).(j) <- matrix.(i).(j) /. pivot;
       id.(i).(j) <- id.(i).(j) /. pivot;
-    done;
+      scale_pivot_row i (j + 1) pivot
+    end
   in
 
-  let rec eliminate_other_rows i =
-    if i < n then begin
+  let rec eliminate_row j k i factor =
+    if k >= n then ()
+    else begin
+      matrix.(j).(k) <- matrix.(j).(k) -. factor *. matrix.(i).(k);
+      id.(j).(k) <- id.(j).(k) -. factor *. id.(i).(k);
+      eliminate_row j (k + 1) i factor
+    end
+  in
+
+  let rec eliminate_other_rows j i =
+    if j >= n then ()
+    else if i <> j then begin
+      let factor = matrix.(j).(i) in
+      eliminate_row j 0 i factor;
+      eliminate_other_rows (j + 1) i
+    end else
+      eliminate_other_rows (j + 1) i
+  in
+
+  let rec process_row i =
+    if i >= n then ()
+    else begin
       let pivot = matrix.(i).(i) in
       if pivot = 0. then error "Matrix is not invertible";
-
-      scale_pivot_row i pivot;
-
-      for j = 0 to n - 1 do
-        if i <> j then begin
-          let factor = matrix.(j).(i) in
-          for k = 0 to n - 1 do
-            matrix.(j).(k) <- matrix.(j).(k) -. factor *. matrix.(i).(k);
-            id.(j).(k) <- id.(j).(k) -. factor *. id.(i).(k);
-          done;
-        end;
-      done;
-
-      eliminate_other_rows (i + 1);
-    end;
+      scale_pivot_row i 0 pivot;
+      eliminate_other_rows 0 i;
+      process_row (i + 1)
+    end
   in
 
-  eliminate_other_rows 0;
+  process_row 0;
 
   Array.map (fun row -> Vlist (Array.map (fun x -> Vint (int_of_float x)) row)) id
 
