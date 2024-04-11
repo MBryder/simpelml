@@ -4,7 +4,7 @@ def test(i):
 def tester(i):
     for x = 0 in 5:
         print(i) 
-    y = 10
+    y = [15, 20, 30]
     return y
 
 print("Start")

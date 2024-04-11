@@ -59,7 +59,6 @@
 
      
 
-  (* i mini-python står der det her: and file = def list * stmt, og ikke type file = stm *)
-   (* a program is simply a statement. *)
+   (* a program is simply a statement, def list til funktionerne. *)
   and file = def list * stmt
    

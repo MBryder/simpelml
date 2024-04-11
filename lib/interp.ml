@@ -174,7 +174,7 @@ and interp_binop_bool ctx op e1 e2 =
 (* ************************************************************************** *)
 
 (* Interpreting a statement *)
-and stmt ctx = function (* den her er gul fordi den mangler Sreturn _|Seval _|Sset (_, _, _)|Sdef (_, _))*) 
+and stmt ctx = function 
   | Seval e ->
     ignore (interp_expr ctx e)
   | Sif (e, s1, s2) ->

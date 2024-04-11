@@ -36,7 +36,7 @@ file:
 def: 
 | DEF f = ident LP x = separated_list(COMMA, ident) RP (* her definerer vi funktion f, med lP som holder parameter listen til functionen og RP. *)
   COLON s = suite (* suite er en block af kode så s er altså selve indholdet til funktionen*)
-   {f, x, s} (* skal vi inkoperere return her? det behøver man jo ikke altid så det skal nok defineresin the interpreter or something*)
+   {f, x, s} 
 ; 
 
 expr:
