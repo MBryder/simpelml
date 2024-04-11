@@ -1,18 +1,9 @@
-print("1 + 2")
-print("1 + 2")
-print("1 + 2")
-print(        )
 print("Matrix transpose eksempel 1")
 o = [[1,2,3.5],[4,5,6]]
 print(o)
 o = o^T
 print(o)
-print(        )
-m = 3
-m++
-m--
-#print(wwwwwwwwwwwwwwwwwwwww)
-for i = 1 in 10:
+for i = 1 in 3:
     print("Loop iteration: ", i)
 test = [1,1,1]
 test[0] = 3

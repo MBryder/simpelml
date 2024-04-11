@@ -155,7 +155,6 @@ let token_to_string = function
     | BEGIN -> "BEGIN"
     | END -> "END"
     | EOF -> "EOF"
-    | _ -> "Unknown token"
 
 
   let next_token =
