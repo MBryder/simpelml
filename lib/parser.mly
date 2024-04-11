@@ -14,7 +14,7 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV
+%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV DET SCALE MPLUS MMINUS
 
 /* priorities and associativities */
 
@@ -24,7 +24,7 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %nonassoc NOT
 %nonassoc CMP
 %left PLUS MINUS
-%left TIMES DIV MOD MTIMES
+%left TIMES DIV MOD MTIMES MPLUS MMINUS
 %nonassoc unary_minus
 
 %start file
@@ -52,6 +52,12 @@ expr:
     { Eunop (Utrans, e1) }
 | e1 = expr INV
     { Eunop (Uinv, e1) }
+| e1 = expr DET
+    { Eunop (Udet, e1) }
+| e1 = expr SCALE LP f = CST RP
+    { match f with
+      | Cfloat v -> Eunop (Uscale v, e1)
+      | _ -> raise Parsing.Parse_error }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
 | LP e = expr RP
@@ -105,6 +111,8 @@ simple_stmt:
 | AND   { Band }
 | OR    { Bor  }
 | MTIMES { Bmtimes }
+| MPLUS { Bmplus }
+| MMINUS { Bmminus }
 ;
 
 ident:

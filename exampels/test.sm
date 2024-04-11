@@ -41,9 +41,49 @@ print(sigurd4)
 
 print(        )
 print("Artihmetic with floats")
-g = 4.5
+g = 4.55
 f = 2.3
 
 print(g*f)
 print(g+f)
-print(g // f)
+print(g//f)
+
+print(        )
+print("Matrix determinant eksempel 1")
+imar5 = [[1.3,2.2], [3.3,4.3]]
+sigurd5 = imar5.det
+print(sigurd5)
+
+print(        )
+print("Matrix determinant eksempel 2")
+imar6 = [[1,2], [3,4]]
+sigurd6 = imar6.det
+print(sigurd6)
+
+print(        )
+print("Matrix determinant eksempel 3")
+imar7 = [[1.3,2], [3,4.4]]
+sigurd7 = imar7.det
+print(sigurd7)
+
+print(        )
+print("Matrix scale eksempel 1")
+imar8 = [[1,2], [3,4]]
+sigurd8 = imar8.scale(2.2)
+print(sigurd8)
+
+print(        )
+print("Matrix addition eksempel 1")
+imar9 = [[1,2], [3,4]]
+sigurd9 = [[1,2], [3,4]]
+hans9 = imar9 M+ sigurd9
+print(hans9)
+
+print(        )
+print("Matrix subtraction eksempel 1")
+imar10 = [[1.1,3], [3,4]]
+sigurd10 = [[1,2], [3,4]]
+hans10 = imar10 M- sigurd10
+print(hans10)
+
+print(3.00000001)

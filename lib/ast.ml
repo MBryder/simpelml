@@ -23,11 +23,13 @@
      | Uneg (* -e *)
      | Unot (* not e *)
      | Utrans (* trans e *)
-     | Uinv (* inv e *)
-   
+     | Uinv (* e  inv *)
+     | Udet (* e det *)
+     | Uscale of float (* scale e *)
+
    (* Binary operators. *)
    type binop =
-     | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes   (* + - * // % *)
+     | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes | Bmplus | Bmminus (* + - * // % *)
      | Beq | Bneq | Blt | Ble | Bgt | Bge  (* == != < <= > >= *)
      | Band | Bor                          (* and or *)
    
@@ -61,4 +63,3 @@
    
    (* a program is simply a statement. *)
    type file = stmt
-   

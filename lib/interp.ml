@@ -28,7 +28,13 @@ let rec print_value = function
   | Vbool true -> printf "True"
   | Vbool false -> printf "False"
   | Vint n -> printf "%d" n
-  | Vfloat f -> printf "%f" f
+  | Vfloat f -> 
+    let s = Printf.sprintf "%.10f" f in
+    let rec rtrim s i =
+      if i >= 0 && (s.[i] = '0' || s.[i] = '.') then rtrim s (i - 1)
+      else String.sub s 0 (i + 1)
+    in
+    printf "%s" (rtrim s (String.length s - 1))
   | Vstring s -> printf "%s" s
   | Vlist a ->
     let n = Array.length a in
@@ -163,6 +169,68 @@ let invert (v: value array) : value array =
   Array.map (fun row -> Vlist (Array.map (fun x -> Vfloat x) row)) id
 
 
+(*Determinant implementation*)
+let rec determinant matrix =
+  let matrix = Array.map (function
+    | Vlist row -> Array.map (function 
+        | Vfloat x -> x 
+        | Vint x -> float_of_int x
+        | _ -> error "Expected a float or int") row
+    | _ -> error "Expected a list"
+  ) matrix in
+  det matrix
+
+and det matrix =
+  let size = Array.length matrix in
+  if size = 1 then matrix.(0).(0)
+  else if size = 2 then matrix.(0).(0) *. matrix.(1).(1) -. matrix.(0).(1) *. matrix.(1).(0)
+  else
+    let rec calc_sum i acc =
+      if i >= size then acc
+      else
+        let sub_matrix = Array.init (size - 1) (fun j ->
+          Array.init (size - 1) (fun k ->
+            matrix.(if j < i then j else j + 1).(k + 1)
+          )
+        ) in
+        let sign = if i mod 2 = 0 then 1. else -1. in
+        calc_sum (i + 1) (acc +. sign *. matrix.(i).(0) *. det sub_matrix)
+    in
+    calc_sum 0 0.
+
+(* Mplus implementation *)
+let rec mplus a b =
+  if Array.length a <> Array.length b then error "Matrices are not of the same size";
+  Array.mapi (fun i row_a -> 
+    match row_a, b.(i) with
+    | Vlist row_a, Vlist row_b -> 
+      Vlist (Array.map2 add_vfloat_or_vint row_a row_b)
+    | _, _ -> error "Expected a Vlist"
+  ) a
+
+and add_vfloat_or_vint a b = match a, b with
+  | Vfloat f1, Vfloat f2 -> Vfloat (f1 +. f2)
+  | Vint i1, Vint i2 -> Vint (i1 + i2)
+  | Vfloat f, Vint i | Vint i, Vfloat f -> Vfloat (f +. float_of_int i)
+  | _, _ -> error "Expected a Vfloat or Vint"
+
+  (* Mminus implementation *)
+  let rec mminus a b =
+    if Array.length a <> Array.length b then error "Matrices are not of the same size";
+    Array.mapi (fun i row_a -> 
+      match row_a, b.(i) with
+      | Vlist row_a, Vlist row_b -> 
+        Vlist (Array.map2 sub_vfloat_or_vint row_a row_b)
+      | _, _ -> error "Expected a Vlist"
+    ) a
+  
+  and sub_vfloat_or_vint a b = match a, b with
+    | Vfloat f1, Vfloat f2 -> Vfloat (f1 -. f2)
+    | Vint i1, Vint i2 -> Vint (i1 - i2)
+    | Vfloat f, Vint i -> Vfloat (f -. float_of_int i)
+    | Vint i, Vfloat f -> Vfloat (float_of_int i -. f)
+    | _, _ -> error "Expected a Vfloat or Vint"
+
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
@@ -220,13 +288,33 @@ and interp_unop ctx op e1 =
     | Vlist l -> Vlist (invert l)
     | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
+  | Udet ->
+    begin match v1 with
+    | Vlist l -> Vfloat (determinant l)
+    | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
+    | Uscale f ->
+      (match v1 with
+      | Vlist l ->
+        let scaled_array = Array.map (fun x -> match x with
+          | Vlist inner_l ->
+            let scaled_inner_array = Array.map (fun y -> match y with
+              | Vfloat v -> Vfloat (v *. f)
+              | Vint v -> Vfloat (float_of_int v *. f)
+              | _ -> error "Expected a Vfloat or Vint in inner Vlist"
+            ) inner_l in
+            Vlist scaled_inner_array
+          | _ -> error "Expected a Vlist in Vlist"
+        ) l in
+        Vlist scaled_array
+      | _ -> error "Expected a Vlist")
 
 
 (* Interpreting binary operations. *)
 and interp_binop ctx op e1 e2 =
   match op with
   | Badd | Bsub | Bmul | Bdiv | Bmod -> interp_binop_arith ctx op e1 e2
-  | Bmtimes -> interp_binop_matrix ctx op e1 e2
+  | Bmtimes | Bmplus | Bmminus -> interp_binop_matrix ctx op e1 e2
   | _ (* all other cases *) ->  interp_binop_bool ctx op e1 e2
 
 
@@ -263,9 +351,10 @@ and interp_binop_matrix ctx op e1 e2 =
   | Vlist a, Vlist b ->
     begin match op with
       | Bmtimes -> Vlist (mtimes a b)
+      | Bmplus -> Vlist (mplus a b)
+      | Bmminus -> Vlist (mminus a b)
       | _ -> assert false
     end
-  | _ -> error "expected a list"
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating
