@@ -254,7 +254,23 @@ and interp_binop_arith ctx op e1 e2 =
       | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (f1 /. f2)
       | _ -> assert false
     end
-    | _ -> error "wrong operand type: arguments must be of same numerical type!"
+  | Vfloat f1, Vint n2 ->
+    begin match op with
+      | Badd -> Vfloat (f1 +. float_of_int n2)
+      | Bsub -> Vfloat (f1 -. float_of_int n2)
+      | Bmul -> Vfloat (f1 *. float_of_int n2)
+      | Bdiv -> if n2 = 0 then error "division by zero!" else Vfloat (f1 /. float_of_int n2)
+      | _ -> assert false
+    end
+  | Vint n1, Vfloat f2 ->
+    begin match op with
+      | Badd -> Vfloat (float_of_int n1 +. f2)
+      | Bsub -> Vfloat (float_of_int n1 -. f2)
+      | Bmul -> Vfloat (float_of_int n1 *. f2)
+      | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (float_of_int n1 /. f2)
+      | _ -> assert false
+    end
+    | _ -> error "wrong operand type: arguments must be of numerical type!"
 
 and interp_binop_matrix ctx op e1 e2 = 
   let v1 = interp_expr ctx e1 in
