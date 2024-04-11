@@ -36,6 +36,7 @@
      | Cbool of bool
      | Cstring of string
      | Cint of int
+     | Cfloat of float
    
    (* Expressions. *)
    type expr =

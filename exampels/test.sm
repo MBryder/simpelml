@@ -1,10 +1,13 @@
 print("1 + 2")
 print("1 + 2")
 print("1 + 2")
-o = [[1,2,3],[4,5,6]]
+print(        )
+print("Matrix transpose eksempel 1")
+o = [[1,2,3.5],[4,5,6]]
 print(o)
 o = o^T
 print(o)
+print(        )
 m = 3
 m++
 m--
@@ -15,13 +18,19 @@ test = [1,1,1]
 test[0] = 3
 print(test)
 
-sigurd = [[1,2], [3,4]]
+print(        )
+print("Matrix multiplikation eksempel 1")
+
+sigurd = [[1,2.9], [3.8,4]]
 imar = [[5,6], [7,8]]
 print(sigurd)
 print(imar)
 
 hans = sigurd M* imar
 print(hans)
+
+print(        )
+print("Matrix multiplikation eksempel 2")
 
 sigurd2 = [[1,2,3], [4,5,6]]
 imar2 = [[1,2], [3,4], [5,6]]
@@ -31,18 +40,19 @@ print(imar2)
 hans2 = sigurd2 M* imar2
 print(hans2)
 
-sigurd3 = [[1,2], [3,4], [5,6]]
-imar3 = [[1,2], [3,4]]
-print(sigurd3)
-print(imar3)
-
-hans3 = sigurd3 M* imar3
-print(hans3)
-
 print(        )
+print("Matrix invers eksempel 1")
 
 imar4 = [[1,2], [3,4]]
+print(imar4)
 sigurd4 = imar4.inv
-print(sigurd4.inv)
+print(sigurd4)
 
 print(        )
+print("Artihmetic with floats")
+g = 4.5
+f = 2.3
+
+print(g*f)
+print(g+f)
+print(g // f)
