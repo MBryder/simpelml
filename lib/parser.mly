@@ -11,7 +11,7 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token <Ast.constant> CST
 %token <Ast.binop> CMP
 %token <string> IDENT 
-%token DEF RETURN IF ELSE PRINT WHILE FOR IN AND OR NOT ELIF
+%token DEF RETURN IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
 %token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV
