@@ -22,9 +22,10 @@
    type unop =
      | Uneg (* -e *)
      | Unot (* not e *)
-     | Utrans (* trans e *)
      | Uinv (* inv e *)
-   
+     | Utrans (* e^T *)
+     | Upop   (* e.pop() *)
+     | Ulen   (* e.len *)
    (* Binary operators. *)
    type binop =
      | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes   (* + - * // % *)
@@ -60,14 +61,13 @@
      | Sfor of ident * expr * expr * stmt (* for loop *)
      | Sincr of ident
      | Sdecr of ident
+     | Spush of expr * expr
      | Slist_assign of expr * expr * expr  (* New statement type: array, index, new value *)
      | Sreturn of expr                 (* til funktion*)
-     | Seval of expr   
-   
-  and def = ident * ident list * stmt(*definerer function *)
+     | Seval of expr  
 
-  
+  and def = ident * ident list * stmt (*definerer function *)
 
-  (* a program is simply a statement, def list til funktionerne. *)
+   (* a program is simply a statement. *)
   and file = def list * stmt
    

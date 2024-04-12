@@ -14,11 +14,11 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %token DEF RETURN IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV
+%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV POP PUSH LEN
 
 /* priorities and associativities */
 
-%nonassoc TRANS INV
+%nonassoc TRANS INV POP
 %left OR
 %left AND
 %nonassoc NOT
@@ -58,6 +58,10 @@ expr:
     { Eunop (Utrans, e1) }
 | e1 = expr INV
     { Eunop (Uinv, e1) }
+| e1 = expr POP
+    { Eunop (Upop, e1) }
+| e1 = expr LEN
+    { Eunop (Ulen, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
 | f = ident LP e = separated_list(COMMA, expr) RP
@@ -96,13 +100,15 @@ simple_stmt:
 | id = ident EQUAL e = expr
     { Sassign (id, e) }
 | id = ident PLUS PLUS
-    { Sincr (id)}
+    { Sincr (id) }
 | id = ident MINUS MINUS
-    { Sdecr (id)}
+    { Sdecr (id) }
 | id = ident PLUS EQUAL e = expr
     { Sassign (id, Ebinop (Badd, Eident id, e)) }
 | PRINT LP el = separated_list(COMMA, expr) RP
     { Sprint el }
+| e1 = expr PUSH LP e2 = expr RP
+    { Spush (e1, e2) }
 | e = expr
     { Seval e }
 ;

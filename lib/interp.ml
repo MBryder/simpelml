@@ -1,5 +1,5 @@
 
-(* Interpreter for SimpelML.  *)
+(* Interpreter for simpleML *)
 open Ast
 open Format
 
@@ -49,6 +49,12 @@ let rec print_values vl = match vl with
     print_value v;
     print_string " ";
     print_values vtl
+
+(* ************************************************************************** *)
+(*                          Interpreting expressions                          *)
+(* ************************************************************************** *)
+
+let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 
 (* Transpose a matrix implementation. *)
 let rec transpose (matrix: value array) : value array =
@@ -166,12 +172,15 @@ let invert (v: value array) : value array =
 
   Array.map (fun row -> Vlist (Array.map (fun x -> Vfloat x) row)) id
 
-
+let update_context ctx e1 new_array =
+  match e1 with
+  | Eident { id } ->
+    Hashtbl.replace ctx id (Vlist new_array)
+  | _ -> error "pop operation is not supported on this type of expression"
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
 
-let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function
@@ -232,6 +241,23 @@ and interp_unop ctx op e1 =
     begin match v1 with
     | Vlist l -> Vlist (invert l)
     | _ -> error "wrong unary operand type: argument must be a matrix!"
+  | Upop ->
+    begin match interp_expr ctx e1 with
+      | Vlist l when Array.length l > 0 ->
+        let last_index = Array.length l - 1 in
+        let popped = l.(last_index) in
+        let new_array = Array.sub l 0 last_index in (* Create a new array without the last element *)
+        begin
+          update_context ctx e1 new_array; (* This function needs to update the context *)
+          popped
+        end
+      | Vlist _ -> error "pop from an empty list"
+      | _ -> error "pop operation on a non-list type"
+    end
+  | Ulen ->
+    begin match interp_expr ctx e1 with
+      | Vlist l -> Vint (Array.length l)
+      | _ -> error "length operation on a non-list type"
     end
 
 
@@ -390,8 +416,22 @@ and stmt ctx = function
       | (_, Vint _) -> error "First expression must be a list"
       | (_, _) -> error "Second expression must be an integer"
     end
+  | Spush (arr_expr, new_val_expr) ->
+    begin
+      match interp_expr ctx arr_expr with
+      | Vlist arr ->
+          let new_val = interp_expr ctx new_val_expr in
+          let new_array = Array.append arr [|new_val|] in
+          begin
+            match arr_expr with
+            | Eident { id } ->
+                Hashtbl.replace ctx id (Vlist new_array)  (* Update the list in the context *)
+            | _ -> error "Must be a list"
+          end
+      | _ -> error "Must be a list"
+    end
+    
   | Sreturn e -> raise (Return (interp_expr ctx e))
-
 
 and block ctx = function
   | [] -> ()
