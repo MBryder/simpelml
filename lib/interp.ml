@@ -239,8 +239,9 @@ and interp_unop ctx op e1 =
     end
   | Uinv ->
     begin match v1 with
-    | Vlist l -> Vlist (invert l)
-    | _ -> error "wrong unary operand type: argument must be a matrix!"
+      | Vlist l -> Vlist (invert l)
+      | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
   | Upop ->
     begin match interp_expr ctx e1 with
       | Vlist l when Array.length l > 0 ->

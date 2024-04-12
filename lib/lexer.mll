@@ -125,6 +125,7 @@ let token_to_string = function
     | INV -> "INV"
     | POP -> "POP"
     | PUSH -> "PUSH"
+    | LEN -> "LEN"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with
