@@ -1,5 +1,5 @@
 
-(* Interpreter for While Language.  *)
+(* Interpreter for SimpelML.  *)
 open Ast
 open Format
 
@@ -233,6 +233,7 @@ and interp_unop ctx op e1 =
     | Vlist l -> Vlist (invert l)
     | _ -> error "wrong unary operand type: argument must be a matrix!"
     end
+  | _ -> error "Unop error"
 
 
 (* Interpreting binary operations. *)
@@ -391,6 +392,7 @@ and stmt ctx = function
       | (_, _) -> error "Second expression must be an integer"
     end
   | Sreturn e -> raise (Return (interp_expr ctx e))
+  |_ -> error "Stmt error"
 
 
 and block ctx = function
