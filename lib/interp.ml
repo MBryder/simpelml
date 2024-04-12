@@ -70,8 +70,7 @@ let rec interp_expr ctx = function
       | Vlist l ->
         let i = expr_int ctx e2 in
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
-| _ -> error "list expected" end
-
+      | _ -> error "list expected" end
   | Eident {id} -> try Hashtbl.find ctx id with _ -> error "not found"
 
 
@@ -230,5 +229,5 @@ and block ctx = function
 let file (dl, s) =
    List.iter
     (fun (f,args,body) -> Hashtbl.add functions f.id (args, body)) dl;
-  stmt (Hashtbl.create 16) s
+  stmt (Hashtbl.create 16) s;
 
