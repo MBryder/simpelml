@@ -46,6 +46,9 @@
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
      | Eget of expr * expr                (* e1[e2] *)
+     | Ecall of ident * expr list         (*funktionskald med parametre*)
+     
+
    
    (* Statements. *)
    type stmt =
@@ -58,7 +61,13 @@
      | Sincr of ident
      | Sdecr of ident
      | Slist_assign of expr * expr * expr  (* New statement type: array, index, new value *)
+     | Sreturn of expr                 (* til funktion*)
+     | Seval of expr   
    
-   (* a program is simply a statement. *)
-   type file = stmt
+  and def = ident * ident list * stmt(*definerer function *)
+
+  
+
+  (* a program is simply a statement, def list til funktionerne. *)
+  and file = def list * stmt
    

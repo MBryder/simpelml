@@ -20,8 +20,10 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
-     ];
-   fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det *)
+       "return", RETURN; 
+       "def", DEF 
+;      ];
+   fun s -> try Hashtbl.find h s with Not_found -> IDENT s
 
   let string_buffer = Buffer.create 1024 (* preallokere hukommelse *)
 
@@ -141,7 +143,9 @@ let token_to_string = function
         | Cbool b -> "CST (Cbool " ^ string_of_bool b ^ ")"
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end
-    | IDENT id -> "IDENT " ^ id
+    | IDENT id -> "IDENT " ^ id (* ID til functionen (altså navnet på funktionen*)
+    | RETURN -> "RETURN"
+    | DEF -> "DEF" (*bare nøgleord til at definere funktionen*)
     | IF -> "IF"
     | ELSE -> "ELSE"
     | WHILE -> "WHILE"
@@ -155,7 +159,6 @@ let token_to_string = function
     | BEGIN -> "BEGIN"
     | END -> "END"
     | EOF -> "EOF"
-
 
   let next_token =
   Printf.printf "Token: ";

@@ -1,5 +1,5 @@
 
-(* Interpreter for simpleML *)
+(* Interpreter for While Language.  *)
 open Ast
 open Format
 
@@ -13,12 +13,15 @@ let error s = raise (Error s)
 
 (* Values. *)
 type value =
+  | Vnone
   | Vbool of bool
   | Vint of int
   | Vfloat of float
   | Vstring of string
   | Vlist of value array
 
+
+exception Return of value
 (* Variables are stored in a hash table that is passed to the
    following OCaml functions as parameter `ctx`. *)
 type ctx = (string, value) Hashtbl.t
@@ -35,6 +38,7 @@ let rec print_value = function
     printf "[";
     for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
     printf "]"
+  | Vnone -> printf "none"
 
 let rec print_values vl = match vl with
   | [] -> printf "@."
@@ -167,8 +171,17 @@ let invert (v: value array) : value array =
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
 
+let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
+
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function
+  | Ecall ({id=f}, el) ->
+      if not (Hashtbl.mem functions f) then error (f ^ " is not a function");
+      let args, body = Hashtbl.find functions f in
+      if List.length args <> List.length el then error ("Inconsistency with expected parameters");
+      let ctx' = Hashtbl.create 16 in
+      List.iter2 (fun {id=x} e -> Hashtbl.add ctx' x (interp_expr ctx e)) args el;
+      begin try stmt ctx' body; Vnone with Return v -> v end  
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
@@ -178,10 +191,10 @@ let rec interp_expr ctx = function
       | Vlist l ->
         let i = expr_int ctx e2 in
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
-| _ -> error "list expected" end
+      | _ -> error "list expected" end
+  | Eident {id} -> try Hashtbl.find ctx id with _ -> error "not found"
 
-  | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
-  
+
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0
   | Vbool true -> 1
@@ -311,7 +324,9 @@ and interp_binop_bool ctx op e1 e2 =
 (* ************************************************************************** *)
 
 (* Interpreting a statement *)
-let rec stmt ctx = function
+and stmt ctx = function 
+  | Seval e ->
+    ignore (interp_expr ctx e)
   | Sif (e, s1, s2) ->
     begin 
       match interp_expr ctx e with
@@ -375,6 +390,7 @@ let rec stmt ctx = function
       | (_, Vint _) -> error "First expression must be a list"
       | (_, _) -> error "Second expression must be an integer"
     end
+  | Sreturn e -> raise (Return (interp_expr ctx e))
 
 
 and block ctx = function
@@ -385,4 +401,8 @@ and block ctx = function
 (*                          Interpreting the program                          *)
 (* ************************************************************************** *)
 
-let file s = stmt (Hashtbl.create 16) s
+let file (dl, s) =
+   List.iter
+    (fun (f,args,body) -> Hashtbl.add functions f.id (args, body)) dl;
+  stmt (Hashtbl.create 16) s;
+
