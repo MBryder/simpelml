@@ -412,7 +412,8 @@ and interp_binop_matrix ctx op e1 e2 =
       | Bmplus -> Vlist (mplus a b)
       | Bmminus -> Vlist (mminus a b)
       | _ -> assert false
-    end
+  end
+  | _ -> error "wrong operand type: arguments must be of Vlist type!"
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating

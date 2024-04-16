@@ -1,3 +1,55 @@
+def determineLinearFunction (listX, listY):
+
+  for i=0 in (listX.len - 1):
+    row = listX[i]
+ 
+    carry = row.pop
+
+    row.push(1)
+
+    row.push(carry)
+   
+    listX[i] = row
+
+  xtransx = (listX^T) M* listX
+  xtransxinv = xtransx.inv
+
+  xtrans = listX^T
+  altUndtagenY = xtransxinv M* xtrans
+
+  result = altUndtagenY M* listY
+
+  return result
+
+
+def predict(linearResult,x):
+  return (x * linearResult[1][0] + linearResult[0][0])
+
+# Mangler funktionalitet til nogle af udregningerne 
+
+def detailsOfLinRegModel (listX, listY):
+
+  linearResults = determineLinearFunction(listX, listY)
+  print("Linear equation: y = ", linearResults[1][0], "x + ", linearResults[0][0])
+
+  print("Number of data pairs: Work in progress")
+
+  print("R Squared: Work in progress")
+
+  print("Sy.x: Work in progress")
+  
+# Test med print statements
+#-----------------------------------------
+print(              )
+
+ismail = [[190], [185], [167]]
+wahlers = [[90], [85], [40]]
+
+print("Predicted weight of a person who is 181 cm tall")
+print(predict(determineLinearFunction(ismail,wahlers), 181))
+
+
+print(              )
 print("Matrix transpose eksempel 1")
 o = [[1,2,3.5],[4,5,6]]
 print(o)
