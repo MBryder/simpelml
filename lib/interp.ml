@@ -13,12 +13,15 @@ let error s = raise (Error s)
 
 (* Values. *)
 type value =
+  | Vnone
   | Vbool of bool
   | Vint of int
   | Vfloat of float
   | Vstring of string
   | Vlist of value array
 
+
+exception Return of value
 (* Variables are stored in a hash table that is passed to the
    following OCaml functions as parameter `ctx`. *)
 type ctx = (string, value) Hashtbl.t
@@ -41,6 +44,7 @@ let rec print_value = function
     printf "[";
     for i = 0 to n-1 do print_value a.(i); if i < n-1 then printf ", " done;
     printf "]"
+  | Vnone -> printf "none"
 
 let rec print_values vl = match vl with
   | [] -> printf "@."
@@ -51,6 +55,12 @@ let rec print_values vl = match vl with
     print_value v;
     print_string " ";
     print_values vtl
+
+(* ************************************************************************** *)
+(*                          Interpreting expressions                          *)
+(* ************************************************************************** *)
+
+let functions = (Hashtbl.create 16 : (string, ident list * stmt) Hashtbl.t)
 
 (* Transpose a matrix implementation. *)
 let rec transpose (matrix: value array) : value array =
@@ -168,7 +178,6 @@ let invert (v: value array) : value array =
 
   Array.map (fun row -> Vlist (Array.map (fun x -> Vfloat x) row)) id
 
-
 (*Determinant implementation*)
 let rec determinant matrix =
   let matrix = Array.map (function
@@ -231,12 +240,27 @@ and add_vfloat_or_vint a b = match a, b with
     | Vint i, Vfloat f -> Vfloat (float_of_int i -. f)
     | _, _ -> error "Expected a Vfloat or Vint"
 
+
+let update_context ctx e1 new_array =
+  match e1 with
+  | Eident { id } ->
+    Hashtbl.replace ctx id (Vlist new_array)
+  | _ -> error "pop operation is not supported on this type of expression"
+
 (* ************************************************************************** *)
 (*                          Interpreting expressions                          *)
 (* ************************************************************************** *)
 
+
 (* Interpreting expressions. *)
 let rec interp_expr ctx = function
+  | Ecall ({id=f}, el) ->
+      if not (Hashtbl.mem functions f) then error (f ^ " is not a function");
+      let args, body = Hashtbl.find functions f in
+      if List.length args <> List.length el then error ("Inconsistency with expected parameters");
+      let ctx' = Hashtbl.create 16 in
+      List.iter2 (fun {id=x} e -> Hashtbl.add ctx' x (interp_expr ctx e)) args el;
+      begin try stmt ctx' body; Vnone with Return v -> v end  
   | Ecst c -> interp_const c
   | Eunop (op, e1) -> interp_unop ctx op e1
   | Ebinop (op, e1, e2) -> interp_binop ctx op e1 e2
@@ -246,10 +270,10 @@ let rec interp_expr ctx = function
       | Vlist l ->
         let i = expr_int ctx e2 in
       (try l.(i) with Invalid_argument _ -> error "index out of bounds")
-| _ -> error "list expected" end
+      | _ -> error "list expected" end
+  | Eident {id} -> try Hashtbl.find ctx id with _ -> error "not found"
 
-  | Eident {id} -> try Hashtbl.find ctx id  with _ -> error "not found"
-  
+
 and expr_int ctx e = match interp_expr ctx e with
   | Vbool false -> 0
   | Vbool true -> 1
@@ -285,8 +309,26 @@ and interp_unop ctx op e1 =
     end
   | Uinv ->
     begin match v1 with
-    | Vlist l -> Vlist (invert l)
-    | _ -> error "wrong unary operand type: argument must be a matrix!"
+      | Vlist l -> Vlist (invert l)
+      | _ -> error "wrong unary operand type: argument must be a matrix!"
+    end
+  | Upop ->
+    begin match interp_expr ctx e1 with
+      | Vlist l when Array.length l > 0 ->
+        let last_index = Array.length l - 1 in
+        let popped = l.(last_index) in
+        let new_array = Array.sub l 0 last_index in (* Create a new array without the last element *)
+        begin
+          update_context ctx e1 new_array; (* This function needs to update the context *)
+          popped
+        end
+      | Vlist _ -> error "pop from an empty list"
+      | _ -> error "pop operation on a non-list type"
+    end
+  | Ulen ->
+    begin match interp_expr ctx e1 with
+      | Vlist l -> Vint (Array.length l)
+      | _ -> error "length operation on a non-list type"
     end
   | Udet ->
     begin match v1 with
@@ -416,7 +458,9 @@ and interp_binop_bool ctx op e1 e2 =
 (* ************************************************************************** *)
 
 (* Interpreting a statement *)
-let rec stmt ctx = function
+and stmt ctx = function 
+  | Seval e ->
+    ignore (interp_expr ctx e)
   | Sif (e, s1, s2) ->
     begin 
       match interp_expr ctx e with
@@ -480,7 +524,22 @@ let rec stmt ctx = function
       | (_, Vint _) -> error "First expression must be a list"
       | (_, _) -> error "Second expression must be an integer"
     end
-
+  | Spush (arr_expr, new_val_expr) ->
+    begin
+      match interp_expr ctx arr_expr with
+      | Vlist arr ->
+          let new_val = interp_expr ctx new_val_expr in
+          let new_array = Array.append arr [|new_val|] in
+          begin
+            match arr_expr with
+            | Eident { id } ->
+                Hashtbl.replace ctx id (Vlist new_array)  (* Update the list in the context *)
+            | _ -> error "Must be a list"
+          end
+      | _ -> error "Must be a list"
+    end
+    
+  | Sreturn e -> raise (Return (interp_expr ctx e))
 
 and block ctx = function
   | [] -> ()
@@ -490,4 +549,8 @@ and block ctx = function
 (*                          Interpreting the program                          *)
 (* ************************************************************************** *)
 
-let file s = stmt (Hashtbl.create 16) s
+let file (dl, s) =
+   List.iter
+    (fun (f,args,body) -> Hashtbl.add functions f.id (args, body)) dl;
+  stmt (Hashtbl.create 16) s;
+

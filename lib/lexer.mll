@@ -20,8 +20,10 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
        "while", WHILE; "for", FOR; "in", IN;
        "and", AND; "or", OR; "not", NOT;
        "True", CST (Cbool true); "False", CST (Cbool false);
-     ];
-   fun s -> try Hashtbl.find h s with Not_found -> IDENT s (* her prøver vi at finde et token der matcher en string s i hashtablet h, og returnere det *)
+       "return", RETURN; 
+       "def", DEF ;      
+       ];
+   fun s -> try Hashtbl.find h s with Not_found -> IDENT s
 
   let string_buffer = Buffer.create 1024 (* preallokere hukommelse *)
 
@@ -45,6 +47,7 @@ let letter = ['a'-'z' 'A'-'Z']
 let digit = ['0'-'9']
 let ident = (letter | '_') (letter | digit | '_')*
 let integer = '0' | ['1'-'9'] digit*
+let float = integer "." integer 
 let space = ' ' | '\t'
 let comment = "#" [^'\n']*
 
@@ -78,9 +81,12 @@ rule next_tokens = parse
   | ".inv"  { [INV] }
   | ".det"  { [DET] }
   | ".scale"{ [SCALE] }
+  | ".pop"  { [POP] }
+  | ".push" { [PUSH] }
+  | ".len"  { [LEN] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
-              with _ -> raise (Lexing_error ("constant too large: " ^ s)) }
+              with _ -> raise (Lexing_error ("constant too large: " ^ s)) }          
   | '"'     { [CST (Cstring (string lexbuf))] }
   | ['0'-'9']+ '.' ['0'-'9']* as s
   { try [CST (Cfloat (float_of_string s))]
@@ -125,6 +131,9 @@ let token_to_string = function
     | SCALE -> "SCALE"
     | MPLUS -> "MPLUS"
     | MMINUS -> "MMINUS"
+    | POP -> "POP"
+    | PUSH -> "PUSH"
+    | LEN -> "LEN"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with
@@ -149,7 +158,9 @@ let token_to_string = function
         | Cbool b -> "CST (Cbool " ^ string_of_bool b ^ ")"
         | Cstring s -> "CST (Cstring " ^ s ^ ")"
         end
-    | IDENT id -> "IDENT " ^ id
+    | IDENT id -> "IDENT " ^ id (* ID til functionen (altså navnet på funktionen*)
+    | RETURN -> "RETURN"
+    | DEF -> "DEF" (*bare nøgleord til at definere funktionen*)
     | IF -> "IF"
     | ELSE -> "ELSE"
     | WHILE -> "WHILE"
@@ -163,7 +174,6 @@ let token_to_string = function
     | BEGIN -> "BEGIN"
     | END -> "END"
     | EOF -> "EOF"
-
 
   let next_token =
   Printf.printf "Token: ";
