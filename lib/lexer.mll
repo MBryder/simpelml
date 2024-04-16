@@ -76,7 +76,11 @@ rule next_tokens = parse
   | ':'     { [COLON] }
   | "^T"    { [TRANS] }
   | "M*"    { [MTIMES] }
+  | "M+"    { [MPLUS] }
+  | "M-"    { [MMINUS] }
   | ".inv"  { [INV] }
+  | ".det"  { [DET] }
+  | ".scale"{ [SCALE] }
   | ".pop"  { [POP] }
   | ".push" { [PUSH] }
   | ".len"  { [LEN] }
@@ -123,6 +127,10 @@ let token_to_string = function
     | TRANS -> "TRANS"
     | MTIMES -> "MTIMES"
     | INV -> "INV"
+    | DET -> "DET"
+    | SCALE -> "SCALE"
+    | MPLUS -> "MPLUS"
+    | MMINUS -> "MMINUS"
     | POP -> "POP"
     | PUSH -> "PUSH"
     | LEN -> "LEN"

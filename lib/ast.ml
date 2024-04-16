@@ -22,13 +22,16 @@
    type unop =
      | Uneg (* -e *)
      | Unot (* not e *)
-     | Uinv (* inv e *)
-     | Utrans (* e^T *)
+     | Utrans (* trans e *)
+     | Uinv (* e  inv *)
+     | Udet (* e det *)
+     | Uscale of float (* scale e *)
      | Upop   (* e.pop() *)
      | Ulen   (* e.len *)
+
    (* Binary operators. *)
    type binop =
-     | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes   (* + - * // % *)
+     | Badd | Bsub | Bmul | Bdiv | Bmod | Bmtimes | Bmplus | Bmminus (* + - * // % *)
      | Beq | Bneq | Blt | Ble | Bgt | Bge  (* == != < <= > >= *)
      | Band | Bor                          (* and or *)
    
@@ -70,4 +73,3 @@
 
    (* a program is simply a statement. *)
   and file = def list * stmt
-   
