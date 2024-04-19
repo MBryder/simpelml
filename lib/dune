@@ -4,5 +4,10 @@
  (modules parser))
 (executable
  (name simpelml)
+ (modules lexer parser simpelml ast interp)
  (promote (until-clean))
  (flags ()))
+(test
+ (name lexer_test)
+ (modules lexer_test)
+ (libraries alcotest))

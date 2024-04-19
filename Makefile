@@ -4,7 +4,10 @@ all: simpelml.exe
 simpelml.exe:
 	dune build lib/simpelml.exe
 
+test:
+	dune runtest
+
 clean:
 	dune clean
 
-.PHONY: all clean simpelml.exe
+.PHONY: all clean simpelml.exe test
