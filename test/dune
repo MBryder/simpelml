@@ -1,2 +1,9 @@
+(menhir
+ (modules parser))
+
+(ocamllex lexer)
+
 (test
- (name simpelml))
+ (name testModule)
+ (modules testModule ast interp lexer parser)
+ (libraries alcotest))
