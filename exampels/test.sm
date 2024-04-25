@@ -1,8 +1,4 @@
-print("Matrix transpose eksempel 1")
-o = [[1,2,3.5],[4,5,6]]
-print(o)
-o = o^T
-print(o)
+
 for i = 1 in 3:
     print("Loop iteration: ", i)
 test = [1,1,1]
