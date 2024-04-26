@@ -41,6 +41,7 @@ let report (b,e) =
     (* Type check all definitions and the main statement *)
     List.iter (fun (f, args, body) -> ignore (Typechecker.type_of_stmt env body)) defs;
     ignore (Typechecker.type_of_stmt env main_stmt);
+    eprintf "Typechecking complete.@.";
 
     if not !parse_only then
       Interp.file (defs, main_stmt)  (* Interpret the program if parsing only is not set *)

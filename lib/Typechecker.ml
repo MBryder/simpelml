@@ -5,6 +5,7 @@ type expr =
   | Bool of bool
   | String of string
   | Var of string
+  | Array of int
 
 type typ =
   | TInt
@@ -26,6 +27,8 @@ let initialize_env () =
   Hashtbl.add env "b" TFloat; 
   Hashtbl.add env "c" TBool;
   Hashtbl.add env "d" TString;
+  Hashtbl.add env "mathilde" TInt;
+  Hashtbl.add env "my_array" (TArray TInt);
   env
 
 (* Type checking function for expressions *)
