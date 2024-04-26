@@ -53,9 +53,9 @@ let report (b,e) =
       report (lexeme_start_p lb, lexeme_end_p lb);
       eprintf "syntax error@.";
       exit 1
-  | Typechecker.TypeError msg ->
-      eprintf "Type error: %s@." msg;
-      exit 1
+      | Typechecker.TypeError (msg, _) ->
+        eprintf "Type error: %s@." msg;
+        exit 1
   | e ->
       eprintf "Anomaly: %s\n@." (Printexc.to_string e);
       exit 2
