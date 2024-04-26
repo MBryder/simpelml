@@ -5,5 +5,5 @@
 
 (test
  (name testModule)
- (modules testModule ast interp lexer parser)
+ (modules testModule lexerTests parserTests ast interp lexer parser)
  (libraries alcotest))
