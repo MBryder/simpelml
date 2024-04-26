@@ -84,6 +84,7 @@ rule next_tokens = parse
   | ".pop"  { [POP] }
   | ".push" { [PUSH] }
   | ".len"  { [LEN] }
+  | ".ustop" { [USTOP]}
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }          
@@ -174,6 +175,7 @@ let token_to_string = function
     | BEGIN -> "BEGIN"
     | END -> "END"
     | EOF -> "EOF"
+    | USTOP -> "USTOP"
 
   let next_token =
   Printf.printf "Token: ";
