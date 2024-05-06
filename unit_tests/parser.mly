@@ -29,7 +29,6 @@ som altså giver os en hierakisk forståelse af kildekoden */
 
 %start file
 %type <Ast.file> file
-%type <Ast.expr> expr
 
 %%
 
@@ -136,7 +135,4 @@ simple_stmt:
 
 ident:
   id = IDENT { { loc = ($startpos, $endpos); id } }
-
-expr_start:
-| e = expr EOF { e }
 ;

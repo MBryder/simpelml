@@ -1,3 +1,4 @@
+open Parser
 open Lexer
 
 let rec read_all_tokens lexbuf =

@@ -1,9 +1,0 @@
-(menhir
- (modules parser))
-
-(ocamllex lexer)
-
-(test
- (name testModule)
- (modules testModule lexerTests parserTests ast interp lexer parser)
- (libraries alcotest))

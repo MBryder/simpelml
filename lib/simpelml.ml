@@ -1,6 +1,7 @@
 open Format
 open Lexing
 open Parser
+open Ast
 let usage = "usage: while-lang [options] file.sm"
 
 let parse_only = ref false
@@ -36,6 +37,11 @@ let () =
     try
       let f = Parser.file Lexer.next_token lb in
       close_in c;
+
+      (* Pretty print the AST *)
+      let pretty_code = pretty_print_file f in
+      print_endline pretty_code;
+
       if !parse_only then exit 0;
       Interp.file f 
     with

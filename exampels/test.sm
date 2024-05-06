@@ -57,6 +57,8 @@ def dataPairs (listX2, listY2):
   
 # Test med print statements
 #-----------------------------------------
+sigurden = 69
+
 print(              )
 
 ismail = [[190], [185], [167], [180], [210]]

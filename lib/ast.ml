@@ -73,3 +73,70 @@
 
    (* a program is simply a statement. *)
   and file = def list * stmt
+
+(* Pretty printer for AST *)
+let string_of_ident = function
+| {id=id; _} -> id
+
+let string_of_unop = function
+| Uneg -> "-"
+| Unot -> "not"
+| Utrans -> "trans"
+| Uinv -> "inv"
+| Udet -> "det"
+| Uscale f -> "scale " ^ string_of_float f
+| Upop -> "pop"
+| Ulen -> "len"
+
+let string_of_binop = function
+| Badd -> "+"
+| Bsub -> "-"
+| Bmul -> "*"
+| Bdiv -> "/"
+| Bmod -> "%"
+| Bmtimes -> "mtimes"
+| Bmplus -> "mplus"
+| Bmminus -> "mminus"
+| Beq -> "=="
+| Bneq -> "!="
+| Blt -> "<"
+| Ble -> "<="
+| Bgt -> ">"
+| Bge -> ">="
+| Band -> "and"
+| Bor -> "or"
+
+let string_of_constant = function
+| Cbool b -> string_of_bool b
+| Cstring s -> "\"" ^ s ^ "\""
+| Cint i -> string_of_int i
+| Cfloat f -> string_of_float f
+
+let rec pretty_print_expr = function
+| Ecst c -> string_of_constant c
+| Ebinop (op, e1, e2) -> pretty_print_expr e1 ^ " " ^ string_of_binop op ^ " " ^ pretty_print_expr e2
+| Eunop (op, e) -> string_of_unop op ^ pretty_print_expr e
+| Ecall (id, es) -> string_of_ident id ^ "(" ^ String.concat ", " (List.map pretty_print_expr es) ^ ")"
+| Elist es -> "[" ^ String.concat ", " (List.map pretty_print_expr es) ^ "]"
+| Eget (e1, e2) -> pretty_print_expr e1 ^ "[" ^ pretty_print_expr e2 ^ "]"
+| Eident id -> string_of_ident id
+
+and pretty_print_stmt = function
+| Sif (e, s1, s2) -> "if (" ^ pretty_print_expr e ^ ") " ^ pretty_print_stmt s1 ^ " else " ^ pretty_print_stmt s2
+| Sassign (id, e) -> string_of_ident id ^ " = " ^ pretty_print_expr e
+| Sblock stmts -> "{\n" ^ String.concat "\n" (List.map pretty_print_stmt stmts) ^ "\n}"
+| Sprint exprs -> "print(" ^ String.concat ", " (List.map pretty_print_expr exprs) ^ ")"
+| Swhile (e, s) -> "while (" ^ pretty_print_expr e ^ ") " ^ pretty_print_stmt s
+| Sfor (id, e1, e2, s) -> "for (" ^ string_of_ident id ^ " = " ^ pretty_print_expr e1 ^ "; " ^ string_of_ident id ^ " < " ^ pretty_print_expr e2 ^ ") " ^ pretty_print_stmt s
+| Sincr id -> string_of_ident id ^ "++"
+| Sdecr id -> string_of_ident id ^ "--"
+| Spush (e1, e2) -> "push(" ^ pretty_print_expr e1 ^ ", " ^ pretty_print_expr e2 ^ ")"
+| Slist_assign (e1, e2, e3) -> pretty_print_expr e1 ^ "[" ^ pretty_print_expr e2 ^ "] = " ^ pretty_print_expr e3
+| Sreturn e -> "return " ^ pretty_print_expr e
+| Seval e -> pretty_print_expr e
+
+and pretty_print_def (id, id_list, stmt) = 
+  "def " ^ string_of_ident id ^ "(" ^ String.concat ", " (List.map string_of_ident id_list) ^ ") " ^ pretty_print_stmt stmt
+
+and pretty_print_file (def_list, stmt) = 
+String.concat "\n" (List.map pretty_print_def def_list) ^ "\n" ^ pretty_print_stmt stmt
