@@ -20,17 +20,6 @@ type env = (string, typ) Hashtbl.t
 
 exception TypeError of string * Ast.location option
 
-(* Initialize the environment *)
-let initialize_env () =
-  let env = Hashtbl.create 10 in
-  Hashtbl.add env "a" TInt;  (* Assuming 'a' is an integer *)
-  Hashtbl.add env "b" TFloat; 
-  Hashtbl.add env "c" TBool;
-  Hashtbl.add env "d" TString;
-  Hashtbl.add env "mathilde" TInt;
-  Hashtbl.add env "my_array" (TArray TInt);
-  env
-
 (* Type checking function for expressions *)
 let rec type_of_expr env = function
   | Ast.Ecst (Ast.Cint _) -> TInt
@@ -38,6 +27,7 @@ let rec type_of_expr env = function
   | Ast.Ecst (Ast.Cbool _) -> TBool
   | Ast.Ecst (Ast.Cstring _) -> TString
   | Ast.Eident { id; loc } -> 
+      (* Look up the type of the variable in the environment *)
       (try Hashtbl.find env id
        with Not_found -> raise (TypeError ("Unbound variable: " ^ id, Some loc)))
   | Ast.Ebinop (_, e1, e2) ->

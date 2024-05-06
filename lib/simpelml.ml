@@ -33,14 +33,14 @@ let report (b,e) =
   let () =
   let c = open_in file in
   let lb = Lexing.from_channel c in
-  let env = Typechecker.initialize_env () in
+  let env = Hashtbl.create 10 in (* Initialize an empty environment *)
   try
     let (defs, main_stmt) = Parser.file Lexer.next_token lb in
     close_in c;
 
     (* Type check all definitions and the main statement *)
-    List.iter (fun (f, args, body) -> ignore (Typechecker.type_of_stmt env body)) defs;
-    ignore (Typechecker.type_of_stmt env main_stmt);
+    List.iter (fun (f, args, body) -> ignore (type_of_stmt env body)) defs;
+    ignore (type_of_stmt env main_stmt);
     eprintf "Typechecking complete.@.";
 
     if not !parse_only then
@@ -54,9 +54,9 @@ let report (b,e) =
       report (lexeme_start_p lb, lexeme_end_p lb);
       eprintf "syntax error@.";
       exit 1
-      | Typechecker.TypeError (msg, _) ->
-        eprintf "Type error: %s@." msg;
-        exit 1
+  | TypeError (msg, _) ->
+      eprintf "Type error: %s@." msg;
+      exit 1
   | e ->
       eprintf "Anomaly: %s\n@." (Printexc.to_string e);
       exit 2
