@@ -1,4 +1,4 @@
 def sum (x, y):
   return x+y
 
-  sigurd = sum(3,5)
+sigurd = sum(3,5)

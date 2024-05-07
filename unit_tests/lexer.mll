@@ -32,8 +32,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
   let rec unindent n = match !stack with 
     | m :: _ when m = n -> []
     | m :: st when m > n -> stack := st; END :: unindent n
-    | _ -> []
-    (* | _ -> raise (Lexing_error "bad indentation") *)
+    | _ -> raise (Lexing_error "bad indentation") 
 
   let update_stack n =
     match !stack with
