@@ -1,5 +1,4 @@
-def dinmor (x, y):
+def sum (x, y):
   return x+y
 
-  sigurd = 5
-  sigurd = 5 + sigurd
+  sigurd = sum(3,5)
