@@ -1,0 +1,5 @@
+def dinmor (x, y):
+  return x+y
+
+  sigurd = 5
+  sigurd = 5 + sigurd

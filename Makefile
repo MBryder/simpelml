@@ -5,7 +5,7 @@ simpelml.exe:
 	dune build lib/simpelml.exe
 
 test:
-	dune runtest
+	dune exec unit_tests/testModule.exe
 
 clean:
 	dune clean

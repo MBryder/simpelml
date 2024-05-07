@@ -1,17 +1,30 @@
 open Alcotest
-open Parser
+open Core
 
 let test_parser () =
-let tokens = ref [DEF; IDENT "x"; EQUAL; CST(Cint 1); NEWLINE; PRINT; LP; IDENT "x"; RP; NEWLINE] in
-let next_token _ =
-  match !tokens with
-  | [] -> EOF
-  | hd :: tl -> tokens := tl; hd
-in
-let actual_ast = Parser.file next_token (Lexing.from_string "") in
-let actual_ast_str = Ast.pretty_print_file actual_ast in
-let expected_ast_str = "print()" in
-Alcotest.(check string) "print()" expected_ast_str actual_ast_str
+  let file_name = "unit_tests/parserTestInput.sm" in
+  if not (Filename.check_suffix file_name ".sm") then
+    raise (Arg.Bad "no .sm extension");
+  let c = In_channel.create file_name in
+
+  let lb = Lexing.from_channel c in
+  try
+    let f = Parser.file Lexer.next_token lb in
+    In_channel.close c;
+
+    (* Pretty print the AST *)
+    let pretty_code = Ast.pretty_print_file f in
+    print_endline pretty_code;
+
+    let expected_ast_str = "print()" in
+    Alcotest.(check string) "ast equality test" expected_ast_str pretty_code
+  with
+  | Lexer.Lexing_error s ->
+    Alcotest.fail ("lexical error: " ^ s)
+  | Parser.Error ->
+    Alcotest.fail "syntax error"
+  | e ->
+    Alcotest.fail ("Anomaly: " ^ (Exn.to_string e))
 
 let suite = [
   test_case "ast equality test" `Quick test_parser;
