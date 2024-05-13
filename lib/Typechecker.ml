@@ -64,6 +64,9 @@ let rec type_of_stmt env stmt =
   | Ast.Sblock stmt_list ->
       List.iter (type_of_stmt env) stmt_list  (* Check all statements in the block *)
   
+      | Ast.Sprint exprs ->
+      List.iter (fun expr -> ignore (type_of_expr env expr)) exprs
+
   | Ast.Sreturn expr ->
       ignore (type_of_expr env expr)  (* Just type check the expression *)
   
