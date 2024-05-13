@@ -38,9 +38,11 @@ let () =
       let f = Parser.file Lexer.next_token lb in
       close_in c;
 
-      (* Pretty print the AST *)
-      let pretty_code = pretty_print_file f in
-      print_endline pretty_code;
+      (* parser unit test *)
+      (* let actual_ast_str = pretty_print_file f in
+      let expected_ast_str = "\n{\nx = 4\ny = 5\nz = x + y\n}" in
+      Printf.printf "\nExpected AST:\n%s\n" expected_ast_str;
+      Printf.printf "\nActual AST:\n%s\n" actual_ast_str; *)
 
       if !parse_only then exit 0;
       Interp.file f 
