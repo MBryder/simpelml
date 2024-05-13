@@ -40,6 +40,7 @@ let rec type_of_expr env = function
   | Ast.Elist _ ->
       raise (TypeError ("Empty lists not allowed", None))
   | _ -> raise (TypeError ("Unsupported expression type for type checking", None))
+  
 
 (* Type checking function for statements *)
 let rec type_of_stmt env stmt =
@@ -66,6 +67,7 @@ let rec type_of_stmt env stmt =
   
   | Ast.Sreturn expr ->
       ignore (type_of_expr env expr)  (* Just type check the expression *)
+    
   
   | Ast.Swhile (cond, body) ->
       let cond_type = type_of_expr env cond in
@@ -73,5 +75,9 @@ let rec type_of_stmt env stmt =
         raise (TypeError ("Condition in while statement must be a boolean", None))
       else
         type_of_stmt env body
+  | Ast.Sprint exprs ->
+      List.iter (fun expr -> ignore (type_of_expr env expr)) exprs  (* Check expressions to be printed *)
+    
+  
   
   | _ -> raise (TypeError ("Unsupported statement type for type checking", None))
