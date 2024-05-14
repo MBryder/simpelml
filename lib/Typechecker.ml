@@ -27,20 +27,27 @@ let rec type_of_expr env = function
   | Ast.Ecst (Ast.Cbool _) -> TBool
   | Ast.Ecst (Ast.Cstring _) -> TString
   | Ast.Eident { id; loc } -> 
-      (* Look up the type of the variable in the environment *)
-      (try Hashtbl.find env id
-       with Not_found -> raise (TypeError ("Unbound variable: " ^ id, Some loc)))
+    (try Hashtbl.find env id
+     with Not_found -> 
+       ignore (TypeError ("Unbound variable: " ^ id, Some loc)); 
+       TError ("Unbound variable: " ^ id))  (* Providing a string argument to TError *)
+
   | Ast.Ebinop (_, e1, e2) ->
       let t1 = type_of_expr env e1 in
       let t2 = type_of_expr env e2 in
-      if t1 = t2 then t1 else raise (TypeError ("Type mismatch in binary operation", None))
+      if t1 = t2 then t1 
+      else begin
+        ignore (TypeError ("Type mismatch in binary operation", None)); 
+        TError "Type mismatch in binary operation"  (* Providing a string argument to TError *)
+      end
   | Ast.Eunop (_, e) -> type_of_expr env e
-  | Ast.Elist el when el <> [] ->
-      TArray (type_of_expr env (List.hd el))
   | Ast.Elist _ ->
-      raise (TypeError ("Empty lists not allowed", None))
-  | _ -> raise (TypeError ("Unsupported expression type for type checking", None))
-  
+    ignore (TypeError ("Empty lists not allowed", None)); 
+    TError "Empty lists not allowed"  (* Providing a string argument to TError *)
+| _ -> 
+    ignore (TypeError ("Unsupported expression type for type checking", None)); 
+    TError "Unsupported expression type for type checking"  (* Providing a string argument to TError *)
+
 
 (* Type checking function for statements *)
 let rec type_of_stmt env stmt =
@@ -51,14 +58,14 @@ let rec type_of_stmt env stmt =
       | TBool -> 
           type_of_stmt env then_stmt;
           type_of_stmt env else_stmt
-      | _ -> raise (TypeError ("Condition in if statement must be a boolean", None)))
+      | _ -> ignore (TypeError ("Condition in if statement must be a boolean", None)))
   
   | Ast.Sassign ({ id; loc }, expr) ->
       let expr_type = type_of_expr env expr in
       (try
          let var_type = Hashtbl.find env id in
          if var_type <> expr_type then
-           raise (TypeError ("Type mismatch in assignment", Some loc))
+           ignore (TypeError ("Type mismatch in assignment", Some loc))
        with Not_found ->
          Hashtbl.add env id expr_type)  (* Handle new variable initialization *)
   
@@ -72,12 +79,10 @@ let rec type_of_stmt env stmt =
   | Ast.Swhile (cond, body) ->
       let cond_type = type_of_expr env cond in
       if cond_type <> TBool then
-        raise (TypeError ("Condition in while statement must be a boolean", None))
+        ignore (TypeError ("Condition in while statement must be a boolean", None))
       else
         type_of_stmt env body
   | Ast.Sprint exprs ->
       List.iter (fun expr -> ignore (type_of_expr env expr)) exprs  (* Check expressions to be printed *)
     
-  
-  
-  | _ -> raise (TypeError ("Unsupported statement type for type checking", None))
+  | _ -> ignore (TypeError ("Unsupported statement type for type checking", None))
