@@ -1,8 +1,7 @@
-open Parser
-open Lexer
+open Lexer2
 
 let rec read_all_tokens lexbuf =
-  match Lexer.next_tokens lexbuf with
+  match Lexer2.next_tokens lexbuf with
   | [USTOP] -> []
   | tokens -> List.map token_to_string tokens @ read_all_tokens lexbuf
 

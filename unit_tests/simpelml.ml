@@ -42,6 +42,16 @@ let () =
       let f = Parser.file Lexer.next_token lb in
       close_in c;
 
+      (* parser unit test *)
+      let actual_ast_str = pretty_print_file f |> strip_string in
+      let expected_ast_str = "{x=4y=5z=x+yprint(z)}" |> strip_string in
+      Printf.printf "\nExpected AST:%s" expected_ast_str;
+      Printf.printf "\nActual AST:%s" actual_ast_str;
+      if actual_ast_str = expected_ast_str then
+        Printf.printf "\nExpected AST is equal to actual AST! :)\n\n"
+      else
+        Printf.printf "\nExpected AST is not equal to actual AST :(\n\n";
+
       if !parse_only then exit 0;
       Interp.file f 
     with

@@ -1,9 +1,19 @@
 (ocamllex
  (modules lexer))
-
 (menhir
  (modules parser))
+(executable
+ (name simpelml)
+ (libraries str)
+ (modules simpelml ast interp parser lexer)
+ (promote (until-clean))
+ (flags ()))
 
+(ocamllex
+ (modules lexer2))
+(menhir
+ (modules parser2))
 (test
  (name testModule)
+ (modules testModule ast2 parser2 lexer2 lexerTests)
  (libraries alcotest core))
