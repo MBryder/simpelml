@@ -45,5 +45,31 @@ damn1 = [[1,1,1],[1,1,1],[1,1,1]]
 damn2 = [[2,2,2],[2,2,2],[2,2,2]]
 print(damn1)
 print(damn2)
+print(" ")
 
 # TASK 2
+result = damn1 M* damn2
+print(result)
+print(" ")
+
+# TASK 3
+result = result.scale(0.5)
+print(result)
+print(" ")
+
+# TASK 4
+damn1 = [[1,2],[4,5]]
+determinant = damn1.det 
+print(determinant)
+print(" ")
+
+# TASK 5
+height = [[190], [185], [167], [180], [210]]
+weight = [[90], [85], [40], [68], [110]]
+print(" ")
+
+
+# TASK 6
+print("Predicted weight of a person who is 181 cm tall")
+print(predict(determineLinearFunction(height,weight), 181))
+print(" ")
