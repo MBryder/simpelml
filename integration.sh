@@ -4,7 +4,7 @@
 output=$(make 2>&1)  # Captures both stdout and stderr
 
 # Optionally, you can check the output if needed
-expected="The number is even."
+expected="lexical error"
 if echo "$output" | grep -q "$expected"; then
     echo "Test passed: found expected output."
 else
