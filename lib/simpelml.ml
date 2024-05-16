@@ -1,6 +1,7 @@
 open Format
 open Lexing
 open Parser
+open Ast
 let usage = "usage: while-lang [options] file.sm"
 
 let parse_only = ref false
@@ -29,6 +30,10 @@ let report (b,e) =
   let lc = e.pos_cnum - b.pos_bol + 1 in
   eprintf "File \"%s\", line %d, characters %d-%d:\n" file l fc lc (* printer en fejlbesked med lokationenerne i koden hvor fejlen opstår*)
 
+let strip_string str =
+  let open Str in
+  str |> global_replace (regexp "[ \n\r\x0c\t]") ""
+
 let () = 
     let c = open_in file in (* her åbner vi bare filen og definerer c som den åbne fil*)
     let lb = Lexing.from_channel c in (*laver lexing buffer lb. lb encapsulerer inputtet, og giver os mulighed for at vide hvor i inputtet 
@@ -36,6 +41,17 @@ let () =
     try
       let f = Parser.file Lexer.next_token lb in
       close_in c;
+
+      (* parser unit test *)
+      let actual_ast_str = pretty_print_file f |> strip_string in
+      let expected_ast_str = "{x = 4 y = 5 z = x + y}" |> strip_string in
+      Printf.printf "\nExpected AST:%s" expected_ast_str;
+      Printf.printf "\nActual AST:%s" actual_ast_str;
+      if actual_ast_str = expected_ast_str then
+        Printf.printf "\nExpected AST is equal to actual AST! :)"
+      else
+        Printf.printf "\nExpected AST is not equal to actual AST :(";
+
       if !parse_only then exit 0;
       Interp.file f 
     with

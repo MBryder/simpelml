@@ -1,0 +1,123 @@
+# Finding 1: Scale doesn't work for ints, only for floats.
+# Finding 2: Can't print the "list.push(x)".
+# Finding 3: Function definitions must be at the top of the file, otherwise error.
+# Finding 4: "False or True" registers with the truth value of False. Switching the position also switches the truth value to True. It should be True in both cases though. 
+
+def testFunction (x, y):
+  return x+y
+
+print("\nTest of all operators:\n")
+print(2+4)
+print(2.2 + 2.3)
+
+print(2-3)
+print(3-2)
+print(2.3-3.2)
+print(3.2-2.3)
+
+print(3 // 2)
+print(3.0//2.0)
+
+print(1*2)
+print(-1*2)
+print(-1*-2)
+
+print(2 % 3)
+print(-2 % 3)
+print(2 % -3)
+
+a = 4
+b = 4.4
+c = "test"
+d = False
+e = True
+print(a)
+print(b)
+print(c)
+print(d)
+print(e)
+
+print(False == False)
+print(True == False)
+print(a == b)
+print(c == "test")
+
+print(False != False)
+print(True != False)
+print(a != b)
+print(c != "test")
+
+print(a < b)
+print(a > b)
+print(a <= b)
+print(a >= b)
+
+matrix = [[1,2,3],[4,5,6]]
+print(matrix^T)
+print(matrix^T M* matrix)
+print(matrix M+ matrix)
+print(matrix M- matrix)
+print(matrix.inv)
+print(matrix.det)
+print(matrix.scale(3.2))
+
+list = [1,2,3]
+print(list)
+print(list.pop)
+print(list)
+list.push(3)
+print(list)
+
+print(matrix)
+print(matrix.pop)
+print(matrix)
+matrix.push(3)
+print(matrix)
+matrix.push([2,3,4])
+print(matrix)
+
+print("Length of matrix: ", matrix.len)
+print("Lenght of list: ", list.len)
+
+print(testFunction(3,4))
+
+f = 3
+print(f)
+f++
+print(f)
+f--
+f--
+print(f)
+
+if 10 == 10:
+  print("10 is in fact equal to 10")
+if 10 == 11:
+  print("10 is not equal to 11, therefore this won't be printed")
+else:
+  print("But this will be printed because the condition failed so the control goes to the else-case")
+
+i = 10
+
+while i == 10:
+  print("While-loop!")
+  i++
+
+for i = 1 in 5:
+  print("Nr. of iteration: ", i)
+
+truth = True
+lie = False
+print(lie or truth)
+print(truth or lie)
+
+print(truth and lie)
+print(lie and truth)
+
+print(truth or truth)
+print(truth and truth)
+
+print(lie or lie)
+print(lie and lie)
+
+print(not truth)
+print(not lie)

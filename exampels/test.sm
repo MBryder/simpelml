@@ -1,3 +1,78 @@
+def determineLinearFunction (listX, listY):
+
+  for i=0 in (listX.len - 1):
+    row = listX[i]
+    carry = row.pop
+    row.push(1)
+    row.push(carry)
+    listX[i] = row
+
+  xtransx = (listX^T) M* listX
+  xtransxinv = xtransx.inv
+
+  xtrans = listX^T
+  altUndtagenY = xtransxinv M* xtrans
+
+  result = altUndtagenY M* listY
+  
+  for i=0 in (listX.len - 1):
+    row = listX[i]
+    xCarry = row.pop
+    row[0] = xCarry
+    listX[i] = row
+
+  return result
+
+def predict(linearResult,x):
+  return (x * linearResult[1][0] + linearResult[0][0])
+
+def RSquared (listXX, listYY):
+  SSres = 0
+  SStot = 0
+
+  for i=0 in (listXX.len - 1):
+    yActual = listYY[i][0]
+    yPredicted = predict(determineLinearFunction(listXX, listYY), listXX[i][0])
+    difference = yActual - yPredicted
+    differenceSquared = difference * difference
+    SSres = SSres +  differenceSquared
+
+  meanY = 0
+  for i = 0 in (listYY.len - 1):
+    meanY = meanY + listYY[i][0]
+
+  meanY = meanY // (listYY.len)
+
+  for i=0 in (listXX.len - 1):
+    yActual = listYY[i][0]
+    diff = yActual - meanY
+    diffsquared = diff * diff
+    SStot = SStot + diffsquared
+    
+  RsquaredResult = 1 - (SSres // SStot)
+  return RsquaredResult
+    
+def dataPairs (listX2, listY2):
+  return listX2.len 
+  
+# Test med print statements
+#-----------------------------------------
+sigurden = 69
+
+print(              )
+
+ismail = [[190], [185], [167], [180], [210]]
+wahlers = [[90], [85], [40], [68], [110]]
+
+print("Predicted weight of a person who is 181 cm tall")
+print(predict(determineLinearFunction(ismail,wahlers), 181))
+
+result = RSquared(ismail, wahlers)
+print("R squared / goodness of fit: ", result)
+print("Data pairs in the linear regression model: ", dataPairs(ismail, wahlers))
+
+
+print(              )
 print("Matrix transpose eksempel 1")
 o = [[1,2,3.5],[4,5,6]]
 print(o)
