@@ -37,3 +37,4 @@ def detailsOfLinRegModel (listX, listY):
   print("R Squared: Work in progress")
 
   print("Sy.x: Work in progress")
+

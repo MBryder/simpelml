@@ -1,0 +1,86 @@
+def determineLinearFunction (listX, listY):
+
+  for i=0 in (listX.len - 1):
+    row = listX[i]
+ 
+    carry = row.pop
+
+    row.push(1)
+
+    row.push(carry)
+   
+    listX[i] = row
+
+  xtransx = (listX^T) M* listX
+  xtransxinv = xtransx.inv
+
+  xtrans = listX^T
+  altUndtagenY = xtransxinv M* xtrans
+
+  result = altUndtagenY M* listY
+
+  return result
+
+
+def predict(linearResult,x):
+  return (x * linearResult[1][0] + linearResult[0][0])
+
+# Mangler funktionalitet til nogle af udregningerne 
+
+def detailsOfLinRegModel (listX, listY):
+
+  linearResults = determineLinearFunction(listX, listY)
+  print("Linear equation: y = ", linearResults[1][0], "x + ", linearResults[0][0])
+
+  print("Number of data pairs: Work in progress")
+
+  print("R Squared: Work in progress")
+
+  print("Sy.x: Work in progress")
+
+# DOCUMENTATION
+# print:                             print()
+# array:                             var = [1,2,3,4,5,6]
+# matrix:                            var = [[1,2], [3,4], [5,6]]
+# matrix multiplication operator:    M*
+# scale matrix:                      var.scale(float)
+# determinant matrix:                var.det 
+# slope and intercept:               determineLinearFunction(vector, vector)
+# predict from slope and intercept:  predict(slopeAndIntercept, float/int)
+
+# TASK 1
+# Create two 3x3 matrices.
+x = 1
+print(x)
+
+# Print the matrices.
+
+
+# TASK 2
+# Multiply the two matrices together.
+
+# Print the result.
+
+
+# TASK 3
+# Scale the resulting matrix by 0.5.
+
+# Print the result.
+
+# TASK 4
+# Create a new 3x3 matrix.
+
+# Calculate the determinant of the new matrix.
+
+# Print the result.
+
+# TASK 5
+# Create two vectors for 5 heights and 5 weights.
+
+
+# TASK 6
+# Find intercept and slope of linear regression and save in variable.
+
+# Use intercept and slope to predict weight of person who is 181 cm tall and save in variable.
+
+# Print predicted weight

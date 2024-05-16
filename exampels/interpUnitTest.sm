@@ -2,6 +2,7 @@
 # Finding 2: Can't print the "list.push(x)".
 # Finding 3: Function definitions must be at the top of the file, otherwise error.
 # Finding 4: "False or True" registers with the truth value of False. Switching the position also switches the truth value to True. It should be True in both cases though. 
+# Finding 5: Can't access inner lists becaues they are not named by default and you need a name for a list to do len, push and pop.
 
 def testFunction (x, y):
   return x+y

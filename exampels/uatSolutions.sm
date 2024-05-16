@@ -1,0 +1,47 @@
+# TASK 1
+# Create two 3x3 matrices.
+damn1 = [[1,1,1],[1,1,1],[1,1,1]]
+damn2 = [[2,2,2],[2,2,2],[2,2,2]]
+
+# Print the matrices.
+print(damn1)
+print(damn2)
+print(" ")
+
+# TASK 2
+# Multiply the two matrices together.
+result = damn1 M* damn2
+# Print the result.
+print(result)
+print(" ")
+
+# TASK 3
+# Scale the resulting matrix by 0.5.
+result = result.scale(0.5)
+# Print the result.
+print(result)
+print(" ")
+
+# TASK 4
+# Create a new 3x3 matrix.
+damn1 = [[1,2],[4,5]]
+# Calculate the determinant of the new matrix.
+determinant = damn1.det 
+# Print the result.
+print(determinant)
+print(" ")
+
+# TASK 5
+# Create arrays for heights and weights.
+height = [[190], [185], [167], [180], [210]]
+weight = [[90], [85], [40], [68], [110]]
+print(" ")
+
+
+# TASK 6
+# Find intercept and slope of linear regression and save in variable.
+interceptSlope = determineLinearFunction(height,weight)
+# Use intercept and slope to predict weight of person who is 181 cm tall and save in variable.
+predicted_weight = predict(interceptSlope, 181)
+# Print predicted weight
+print(predicted_weight)
