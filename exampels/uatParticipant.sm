@@ -10,7 +10,8 @@
 
 # TASK 1
 # Create two 3x3 matrices.
-
+x = 1
+print(x)
 
 # Print the matrices.
 
