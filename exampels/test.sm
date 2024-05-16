@@ -1,3 +1,6 @@
+def hej(name):
+    print("Hej", name)
+
 print("Matrix transpose eksempel 1")
 o = [[1,2,3.5],[4,5,6]]
 print(o)
@@ -96,3 +99,4 @@ hans10 = imar10 M- sigurd10
 print(hans10)
 
 print(3.00000001)
+hej("Marcus")
