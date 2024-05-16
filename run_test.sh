@@ -6,7 +6,7 @@ source ./integration_test.sh
 echo "Running tests..."
 
 # Run multiple test cases
-run_integration_test  "exampels/integration_test/test_addition.sm" "hello"
+run_integration_test  "exampels/integration_test/testing_print_string.sm" "hello"
 run_integration_test "exampels/integration_test/test_addition.sm" "4"
 run_integration_test "exampels/integration_test/test_subtraction.sm" "5"
 run_integration_test "exampels/integration_test/test_increment.sm" "4"
