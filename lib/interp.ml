@@ -294,7 +294,16 @@ and interp_binop_arith ctx op e1 e2 =
       | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (f1 /. f2)
       | _ -> assert false
     end
-    | _ -> error "wrong operand type: arguments must be of same numerical type!"
+  | Vint n1, Vfloat f2 | Vfloat f2, Vint n1 ->
+    let n1_f = float_of_int n1 in
+    begin match op with
+      | Badd -> Vfloat (n1_f +. f2)
+      | Bsub -> Vfloat (n1_f -. f2)
+      | Bmul -> Vfloat (n1_f *. f2)
+      | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (n1_f /. f2)
+      | _ -> assert false (* other operations excluded by assumption. *)
+    end
+  | _ -> error "wrong operand type: arguments must be of same numerical type or compatible mixed types!"
 
 and interp_binop_matrix ctx op e1 e2 = 
   let v1 = interp_expr ctx e1 in
@@ -395,6 +404,7 @@ and stmt ctx = function
     begin
       match Hashtbl.find_opt ctx id with
       | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n + 1))
+      | Some (Vfloat f) -> Hashtbl.replace ctx id (Vfloat (f +. 1.))
       | Some _ -> error "increment operation applied to non-integer"
       | None -> error "variable not found for increment"
     end
@@ -402,6 +412,7 @@ and stmt ctx = function
     begin
       match Hashtbl.find_opt ctx id with
       | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n - 1))
+      | Some (Vfloat n) -> Hashtbl.replace ctx id (Vfloat (n -. 1.))
       | Some _ -> error "increment operation applied to non-integer"
       | None -> error "variable not found for increment"
     end

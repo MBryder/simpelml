@@ -56,6 +56,7 @@ let report (b,e) =
       exit 1
   | TypeError (msg, _) ->
       eprintf "Type error: %s@." msg;
+      exit 1
   | e ->
       eprintf "Anomaly: %s\n@." (Printexc.to_string e);
       exit 2
