@@ -4,6 +4,5 @@
  (modules parser))
 (executable
  (name simpelml)
- (libraries str)
  (promote (until-clean))
  (flags ()))

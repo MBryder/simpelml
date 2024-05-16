@@ -1,9 +1,0 @@
-(ocamllex
- (modules lexer))
-
-(menhir
- (modules parser))
-
-(test
- (name testModule)
- (libraries alcotest core))
