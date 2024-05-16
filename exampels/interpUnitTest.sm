@@ -107,8 +107,8 @@ for i = 1 in 5:
 
 truth = True
 lie = False
-print(lie or truth)
-print(truth or lie)
+print((lie or truth)) # burde vaere True
+print(truth or lie) # burde vaere True
 
 print(truth and lie)
 print(lie and truth)

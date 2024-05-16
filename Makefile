@@ -1,5 +1,5 @@
 all: simpelml.exe
-	dune exec lib/simpelml.exe exampels/astUnitTest.sm
+	dune exec lib/simpelml.exe 
 
 simpelml.exe:
 	dune build lib/simpelml.exe
