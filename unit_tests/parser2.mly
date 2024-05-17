@@ -5,16 +5,16 @@ er at analysere strukturen i kilde koden, i relation til grammatiken. Dette gør
 som altså giver os en hierakisk forståelse af kildekoden */ 
 
 %{
-  open Ast
+  open Ast2
 %}
 
-%token <Ast.constant> CST
-%token <Ast.binop> CMP
+%token <Ast2.constant> CST
+%token <Ast2.binop> CMP
 %token <string> IDENT 
 %token DEF RETURN IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV DET SCALE MPLUS MMINUS POP PUSH LEN
+%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV DET SCALE MPLUS MMINUS POP PUSH LEN USTOP
 
 /* priorities and associativities */
 
@@ -28,7 +28,7 @@ som altså giver os en hierakisk forståelse af kildekoden */
 %nonassoc unary_minus
 
 %start file
-%type <Ast.file> file
+%type <Ast2.file> file
 
 %%
 

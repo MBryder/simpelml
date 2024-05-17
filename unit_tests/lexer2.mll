@@ -5,8 +5,8 @@ første skridt i vores compilation-process. Lexeren tager altså kildekoden, og 
 hver character i kildekoden og sammenligne den med en række predefineret mønstre for at identificere tokens -> fx ( er [LP] *)
 {
   open Lexing
-  open Ast
-  open Parser
+  open Ast2
+  open Parser2
 
   exception Lexing_error of string
 
@@ -32,7 +32,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
   let rec unindent n = match !stack with 
     | m :: _ when m = n -> []
     | m :: st when m > n -> stack := st; END :: unindent n
-    | _ -> raise (Lexing_error "bad indentation")
+    | _ -> raise (Lexing_error "bad indentation") 
 
   let update_stack n =
     match !stack with
@@ -84,6 +84,7 @@ rule next_tokens = parse
   | ".pop"  { [POP] }
   | ".push" { [PUSH] }
   | ".len"  { [LEN] }
+  | ".ustop" { [USTOP] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }          
@@ -135,6 +136,7 @@ let token_to_string = function
     | PUSH -> "PUSH"
     | LEN -> "LEN"
     | EQUAL -> "EQUAL"
+    | USTOP -> "USTOP"
     | CMP cmp ->
         begin match cmp with
         | Beq -> "CMP Beq"

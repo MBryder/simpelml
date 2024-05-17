@@ -1,15 +1,37 @@
-def function():
-    print("hej")
-a = 2
-b = 3.2
-t = "x"
-c = True
-d = "hej"
-z = [1,2,3,4,5,6]
-y = b + a
-print(y)
-print(a)
-a++
-b++
-print(z[1])
-function()
+def calculate_sum(L):
+    s = 0
+    i = 0
+    while i < L.len:
+        s = s + L[i]
+        i = i + 1
+    return s
+
+def main():
+    a = [1, 2, 3, 4, 5]
+    b = [6, 7, 8, 9, 10]
+    
+    print("list a:", a)
+    print("list b:", b)
+
+    sum_a = calculate_sum(a)
+    sum_b = calculate_sum(b)
+    
+    print("sum of list a:", sum_a)
+    print("sum of list b:", sum_b)
+    
+    
+    
+    a[0] = 10
+    a[0] = a[0] + 5
+    a[1] = a[1] - 2
+    a[2] = a[2] * 2
+    a[3] = a[3] // 2
+    a[4] = a[4] % 3
+    
+    print("modified list a:", a)
+
+    a[0] = a[0] * 2
+    
+    print("squared first element of list a:", a[0])
+
+main()

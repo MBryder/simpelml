@@ -363,37 +363,44 @@ and interp_binop ctx op e1 e2 =
 (* Interpreting binary arithmetic operations return a numerical value. *)
 (* We assume that op can only be a binary operation evaluating
    to a integer value, as it is called from the `interp_binop`. *)
-and interp_binop_arith ctx op e1 e2 =
-  let v1 = interp_expr ctx e1 in
-  let v2 = interp_expr ctx e2 in
-  match v1, v2 with
-  | Vint n1, Vint n2 ->
-    begin match op with
-        | Badd -> Vint (n1 + n2)
-        | Bsub -> Vint (n1 - n2)
-        | Bmul -> Vint (n1 * n2)
-        | Bmod -> Vint (n1 mod n2)
-        | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
-        | _ -> assert false (* other operations excluded by asssumption. *)
-    end
-  | Vfloat f1, Vfloat f2 ->
-    begin match op with
-      | Badd -> Vfloat (f1 +. f2)
-      | Bsub -> Vfloat (f1 -. f2)
-      | Bmul -> Vfloat (f1 *. f2)
-      | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (f1 /. f2)
-      | _ -> assert false
-    end
-  | Vint n1, Vfloat f2 | Vfloat f2, Vint n1 ->
-    let n1_f = float_of_int n1 in
-    begin match op with
-      | Badd -> Vfloat (n1_f +. f2)
-      | Bsub -> Vfloat (n1_f -. f2)
-      | Bmul -> Vfloat (n1_f *. f2)
-      | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (n1_f /. f2)
-      | _ -> assert false (* other operations excluded by assumption. *)
-    end
-  | _ -> error "wrong operand type: arguments must be of same numerical type or compatible mixed types!"
+   and interp_binop_arith ctx op e1 e2 =
+    let v1 = interp_expr ctx e1 in
+    let v2 = interp_expr ctx e2 in
+    match v1, v2 with
+    | Vint n1, Vint n2 ->
+      begin match op with
+          | Badd -> Vint (n1 + n2)
+          | Bsub -> Vint (n1 - n2)
+          | Bmul -> Vint (n1 * n2)
+          | Bmod -> Vint (n1 mod n2)
+          | Bdiv -> if n2 = 0 then error "division by zero!" else Vint (n1 / n2)
+          | _ -> assert false (* other operations excluded by asssumption. *)
+      end
+    | Vfloat f1, Vfloat f2 ->
+      begin match op with
+        | Badd -> Vfloat (f1 +. f2)
+        | Bsub -> Vfloat (f1 -. f2)
+        | Bmul -> Vfloat (f1 *. f2)
+        | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (f1 /. f2)
+        | _ -> assert false
+      end
+    | Vfloat f1, Vint n2 ->
+      begin match op with
+        | Badd -> Vfloat (f1 +. float_of_int n2)
+        | Bsub -> Vfloat (f1 -. float_of_int n2)
+        | Bmul -> Vfloat (f1 *. float_of_int n2)
+        | Bdiv -> if n2 = 0 then error "division by zero!" else Vfloat (f1 /. float_of_int n2)
+        | _ -> assert false
+      end
+    | Vint n1, Vfloat f2 ->
+      begin match op with
+        | Badd -> Vfloat (float_of_int n1 +. f2)
+        | Bsub -> Vfloat (float_of_int n1 -. f2)
+        | Bmul -> Vfloat (float_of_int n1 *. f2)
+        | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (float_of_int n1 /. f2)
+        | _ -> assert false
+      end
+      | _ -> error "wrong operand type: arguments must be of numerical type!"
 
 and interp_binop_matrix ctx op e1 e2 = 
   let v1 = interp_expr ctx e1 in
@@ -405,7 +412,8 @@ and interp_binop_matrix ctx op e1 e2 =
       | Bmplus -> Vlist (mplus a b)
       | Bmminus -> Vlist (mminus a b)
       | _ -> assert false
-    end
+  end
+  | _ -> error "wrong operand type: arguments must be of Vlist type!"
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating
@@ -495,7 +503,6 @@ and stmt ctx = function
     begin
       match Hashtbl.find_opt ctx id with
       | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n + 1))
-      | Some (Vfloat f) -> Hashtbl.replace ctx id (Vfloat (f +. 1.))
       | Some _ -> error "increment operation applied to non-integer"
       | None -> error "variable not found for increment"
     end
@@ -503,7 +510,6 @@ and stmt ctx = function
     begin
       match Hashtbl.find_opt ctx id with
       | Some (Vint n) -> Hashtbl.replace ctx id (Vint (n - 1))
-      | Some (Vfloat n) -> Hashtbl.replace ctx id (Vfloat (n -. 1.))
       | Some _ -> error "increment operation applied to non-integer"
       | None -> error "variable not found for increment"
     end
