@@ -1,7 +1,7 @@
 def calculate_sum(L):
     s = 0
     i = 0
-    while i < L.len:
+    while i < 4:
         s = s + L[i]
         i = i + 1
     return s
@@ -19,7 +19,10 @@ def main():
     print("sum of list a:", sum_a)
     print("sum of list b:", sum_b)
     
-    
+    if sum_a > sum_b:
+        print("list a has a greater sum")
+    else:
+        print("list b has a greater sum")
     
     a[0] = 10
     a[0] = a[0] + 5

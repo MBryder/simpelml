@@ -5,7 +5,10 @@ type expr =
   | Bool of bool
   | String of string
   | Var of string
-  | Array of int
+  | List of expr list
+  | Get of expr * expr
+  | Binop of string * expr * expr
+  | Unop of string * expr
 
 type typ =
   | TInt
@@ -29,9 +32,8 @@ let rec type_of_expr env = function
   | Ast.Eident { id; loc } -> 
     (try Hashtbl.find env id
      with Not_found -> 
-       ignore (TypeError ("Unbound variable: " ^ id, Some loc)); 
-       TError ""
-    )
+      ignore (TypeError ("Unbound variable: " ^ id, Some loc)); 
+      TError "")
   | Ast.Elist elts ->
     (match elts with
       | [] -> raise (TypeError ("Empty lists not allowed", None))
@@ -49,22 +51,20 @@ let rec type_of_expr env = function
       (match list_type, index_type with
        | TList t, TInt -> t
        | TList _, _ -> raise (TypeError ("Index must be an integer", None))
-       | _, _ -> ignore (TypeError ("Only lists can be indexed", None)); TError "")
-
+       | _, _ -> raise (TypeError ("Only lists can be indexed", None)))
   | Ast.Ebinop (_, e1, e2) ->
     let t1 = type_of_expr env e1 in
     let t2 = type_of_expr env e2 in
     begin match (t1, t2) with
     | (TInt, TInt) -> TInt
     | (TFloat, TFloat) -> TFloat
-    | (TInt, TFloat) | (TFloat, TInt) ->
-        TFloat  (* Automatically coerce int to float or vice versa *)
-    | _ ->
-    ignore (TypeError ("Type mismatch in binary operation", None)); TError ""
+    | (TInt, TFloat) | (TFloat, TInt) -> TFloat  (* Automatically coerce int to float or vice versa *)
+    | (TString, TString) -> TString
+    | (TBool, TBool) -> TBool
+    | _ -> ignore (TypeError ("Type mismatch in binary operation", None)); TError ""
     end
   | Ast.Eunop (_, e) -> type_of_expr env e
-  | _ -> ignore (Printf.eprintf "Unsupported expression type for type checking\n"); TError ""
-
+  | _ -> ignore (TypeError ("Unsupported expression type for type checking", None)); TError ""
 
 (* Type checking function for statements *)
 let rec type_of_stmt env stmt =
@@ -75,7 +75,7 @@ let rec type_of_stmt env stmt =
       | TBool -> 
           type_of_stmt env then_stmt;
           type_of_stmt env else_stmt
-      | _ -> raise (TypeError ("Condition in if statement must be a boolean", None)))
+      | _ -> ignore (TypeError ("Condition in if statement must be a boolean", None)))
 
   | Ast.Sassign ({ id; loc }, expr) ->
       let expr_type = type_of_expr env expr in
@@ -85,7 +85,7 @@ let rec type_of_stmt env stmt =
            raise (TypeError ("Type mismatch in assignment", Some loc))
        with Not_found ->
          Hashtbl.add env id expr_type)  (* Handle new variable initialization *)
-  
+
   | Ast.Sblock stmt_list ->
       List.iter (type_of_stmt env) stmt_list  (* Check all statements in the block *)
 
@@ -93,17 +93,17 @@ let rec type_of_stmt env stmt =
       ignore (type_of_expr env expr)  (* Just type check the expression *)
 
   | Ast.Swhile (cond, body) ->
-      ignore (type_of_expr env cond);  (* Allow any expression to be evaluated *)
-      type_of_stmt env body
+      let cond_type = type_of_expr env cond in
+      (match cond_type with
+      | TBool -> type_of_stmt env body
+      | _ -> ignore (TypeError ("Condition in while loop must be a boolean", None)))
 
   | Ast.Sfor (ident, start_expr, end_expr, body) ->
       let start_type = type_of_expr env start_expr in
       let end_type = type_of_expr env end_expr in
-      begin
-        match (start_type, end_type) with
-        | (TInt, TInt) -> ()
-        | _ -> raise (TypeError ("For loop bounds must be integers", None))
-      end;
+      (match (start_type, end_type) with
+       | (TInt, TInt) -> ()
+       | _ -> raise (TypeError ("For loop bounds must be integers", None)));
       Hashtbl.add env ident.id TInt;
       type_of_stmt env body;
       Hashtbl.remove env ident.id
