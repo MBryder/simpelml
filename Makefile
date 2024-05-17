@@ -1,5 +1,5 @@
-all: simpelml.exe combined.sm
-	dune exec lib/simpelml.exe combined.sm
+all: simpelml.exe exampels/test.sm
+	dune exec lib/simpelml.exe exampels/test.sm
 
 combined.sm: exampels/stdlib.sm exampels/test.sm
 	cat exampels/stdlib.sm exampels/uatParticipant.sm > combined.sm
