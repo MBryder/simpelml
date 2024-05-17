@@ -144,4 +144,4 @@ let rec type_of_stmt env stmt =
   | Ast.Sprint exprs ->
       List.iter (fun expr -> ignore (type_of_expr env expr)) exprs  (* Check expressions to be printed *)
 
-  | _ -> raise (TypeError ("Unsupported statement type for type checking", None))
+  | _ -> ignore (TypeError ("Unsupported statement type for type checking", None))

@@ -37,7 +37,6 @@ let report (b,e) =
   try
     let (defs, main_stmt) = Parser.file Lexer.next_token lb in
     close_in c;
-
     (* Type check all definitions and the main statement *)
     List.iter (fun (f, args, body) -> ignore (type_of_stmt env body)) defs;
     ignore (type_of_stmt env main_stmt);
