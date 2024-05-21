@@ -1,8 +1,5 @@
 
 /* Parser for simpleML */
-
-
-
 %{
   open Ast
 %}

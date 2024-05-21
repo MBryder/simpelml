@@ -1,9 +1,5 @@
 
 (* Abstract Syntax of simpleML. *)
-
-
-
-
 (* Identifiers. *)
 
 (* Identifiers (variables) are normally represented by a value of type
