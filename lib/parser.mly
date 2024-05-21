@@ -1,8 +1,6 @@
 
 /* Parser for simpleML */
-/* Parsing sker efter vi har anvendt vores lexer. Den arbejder altså med de tokens, som vores lexer har produceret. Pointen med parseren 
-er at analysere strukturen i kilde koden, i relation til grammatiken. Dette gør parseren ved at konstruere vores abstract syntax tree, 
-som altså giver os en hierakisk forståelse af kildekoden */ 
+
 
 %{
   open Ast
@@ -38,8 +36,8 @@ file:
 ;
 
 def: 
-| DEF f = ident LP x = separated_list(COMMA, ident) RP (* her definerer vi funktion f, med lP som holder parameter listen til functionen og RP. *)
-  COLON s = suite (* suite er en block af kode så s er altså selve indholdet til funktionen*)
+| DEF f = ident LP x = separated_list(COMMA, ident) RP 
+  COLON s = suite 
    {f, x, s} 
 ; 
 

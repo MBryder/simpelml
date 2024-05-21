@@ -1,12 +1,6 @@
 
 (* Abstract Syntax of simpleML. *)
 
-(* Parsed trees.
-   This is the output of the parser and the input of the interpreter. 
-   Den her fil indeholder altså definitioner på elementer og operationer, relateret til vores abstract syntax tree som bliver skabt i 
-   parser.mly*)
-
-
 
 (* Identifiers. *)
 
@@ -50,7 +44,7 @@
      | Eident of ident                    (* variable *)
      | Elist of expr list                 (* [e1,e2,...] *)
      | Eget of expr * expr                (* e1[e2] *)
-     | Ecall of ident * expr list         (*funktionskald med parametre*)
+     | Ecall of ident * expr list         (*functioncall with paramters*)
      
 
    
@@ -66,12 +60,12 @@
      | Sdecr of ident
      | Spush of expr * expr
      | Slist_assign of expr * expr * expr  (* New statement type: array, index, new value *)
-     | Sreturn of expr                 (* til funktion*)
+     | Sreturn of expr                 (* for function*)
      | Seval of expr  
 
-  and def = ident * ident list * stmt (*definerer function *)
+  and def = ident * ident list * stmt (*defines function *)
 
    (* a program is simply a statement. *)
   and file = def list * stmt
 
-(* Pretty printer removed *)
+

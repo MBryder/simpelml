@@ -1,8 +1,6 @@
 
 (* Lexical analyzer for simpleML. *)
-(*Lexerens job er at breake inputtet op i en sequence af tokens. Det er altså vores lexer der udfører de aller 
-første skridt i vores compilation-process. Lexeren tager altså kildekoden, og definerer den som en række tokens. Det gør den ved at tage 
-hver character i kildekoden og sammenligne den med en række predefineret mønstre for at identificere tokens -> fx ( er [LP] *)
+
 {
   open Lexing
   open Ast2
@@ -11,9 +9,8 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
   exception Lexing_error of string
 
   let id_or_kwd =
-    let h = Hashtbl.create 32 in (* bare et hashtabel h med length 32 *)
-    List.iter (fun (s, tok) -> Hashtbl.add h s tok) (* her løber vi faktisk listen igennem der består af par med strings s og korresponderende tokens tok, 
-    og så iterere vi over det til vi har added hvert par til vores hashtabel. Så vi har et hashtabel med strings og deres korresponderende tokens *)
+    let h = Hashtbl.create 32 in 
+    List.iter (fun (s, tok) -> Hashtbl.add h s tok) 
       [
        "if", IF; "else", ELSE;
        "print", PRINT;
@@ -25,7 +22,7 @@ hver character i kildekoden og sammenligne den med en række predefineret mønst
        ];
    fun s -> try Hashtbl.find h s with Not_found -> IDENT s
 
-  let string_buffer = Buffer.create 1024 (* preallokere hukommelse *)
+  let string_buffer = Buffer.create 1024 
 
   let stack = ref [0]  (* indentation stack *)
 
