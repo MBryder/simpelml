@@ -1,11 +1,11 @@
-all: simpelml.exe combined.sm
-	dune exec lib/simpelml.exe combined.sm
+all: simpleml.exe combined.sm
+	dune exec lib/simpleml.exe combined.sm
 
-combined.sm: exampels/stdlib.sm exampels/test.sm
-	cat exampels/stdlib.sm exampels/uatParticipant.sm > combined.sm
+combined.sm: examples/stdlib.sm examples/test.sm
+	cat examples/stdlib.sm examples/uatParticipant.sm > combined.sm
 
-simpelml.exe:
-	dune build lib/simpelml.exe
+simpleml.exe:
+	dune build lib/simpleml.exe
 
 lexerTest:
 	dune exec unit_tests/testModule.exe
@@ -14,13 +14,13 @@ clean:
 	dune clean
 	rm -f combined.sm
 
-test_simpelml.exe:
-	dune build unit_tests/simpelml.exe
+test_simpleml.exe:
+	dune build unit_tests/simpleml.exe
 
 parserTest:
-	dune exec unit_tests/simpelml.exe exampels/astUnitTest.sm
+	dune exec unit_tests/simpleml.exe examples/astUnitTest.sm
 
 interpTest:
-	dune exec lib/simpelml.exe exampels/interpUnitTest.sm
+	dune exec lib/simpleml.exe examples/interpUnitTest.sm
 
-.PHONY: all clean simpelml.exe lexerTest test_simpelml.exe parserTest interpTest combined.sm
+.PHONY: all clean simpleml.exe lexerTest test_simplel.exe parserTest interpTest combined.sm

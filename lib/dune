@@ -3,6 +3,6 @@
 (menhir
  (modules parser))
 (executable
- (name simpelml)
+ (name simpleml)
  (promote (until-clean))
  (flags ()))

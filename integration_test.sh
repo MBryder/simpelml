@@ -32,10 +32,10 @@ run_integration_test() {
     SOURCE_BASENAME=$(basename "$SOURCE_CODE" .sm)
 
     # Compile the executable if it doesn't exist
-    make simpelml.exe
+    make simpleml.exe
 
     # Run the source code using dune exec and capture the output
-    ACTUAL_OUTPUT=$(dune exec lib/simpelml.exe "$SOURCE_CODE" 2>&1 | tail -n 1)
+    ACTUAL_OUTPUT=$(dune exec lib/simpleml.exe "$SOURCE_CODE" 2>&1 | tail -n 1)
 
     echo "Actual output: $ACTUAL_OUTPUT"
 
