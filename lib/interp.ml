@@ -413,6 +413,7 @@ and interp_binop_matrix ctx op e1 e2 =
       | Bmminus -> Vlist (mminus a b)
       | _ -> assert false
     end
+  | _ -> error "not a list"
 
 (* Interpreting binary operations returning a Boolean value. *)
 (* We assume that op can only be a binary operation evaluating
