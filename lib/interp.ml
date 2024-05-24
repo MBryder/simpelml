@@ -331,7 +331,12 @@ and interp_unop ctx op e1 =
       | Vstring s -> Vint (String.length s)
       | Vint i -> Vint (String.length (string_of_int i))
       | Vfloat f -> Vint (String.length (string_of_float f))
-      | _ -> error "length operation on a non-list type"
+      | _ -> Vint 0
+    end
+  | Ulist -> 
+    begin match interp_expr ctx e1 with
+      | Vlist l -> Vbool true
+      | _ -> Vbool false
     end
   | Udet ->
     begin match v1 with
@@ -403,7 +408,22 @@ and interp_binop ctx op e1 e2 =
         | Bdiv -> if f2 = 0. then error "division by zero!" else Vfloat (float_of_int n1 /. f2)
         | _ -> assert false
       end
-      | _ -> error "wrong operand type: arguments must be of numerical type!"
+    | Vstring s1, Vstring s2 ->
+      begin match op with
+        | Badd -> Vstring (s1 ^ s2)
+        | _ -> error "You can't do that with a string"
+      end
+      | (Vstring s, Vint i) | (Vint i, Vstring s) ->
+        begin match op with
+          | Badd -> Vstring (s ^ string_of_int i)
+          | _ -> failwith "You can't do that with a string"
+        end
+    | (Vstring s, Vfloat f) | (Vfloat f, Vstring s) ->
+        begin match op with
+          | Badd -> Vstring (s ^ string_of_float f)
+          | _ -> failwith "You can't do that with a string"
+        end
+    | _ -> error "wrong operand type: arguments must be of numerical type!"
 
 and interp_binop_matrix ctx op e1 e2 = 
   let v1 = interp_expr ctx e1 in

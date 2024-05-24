@@ -22,6 +22,7 @@
      | Uscale of float (* scale e *)
      | Upop   (* e.pop() *)
      | Ulen   (* e.len *)
+     | Ulist
 
    (* Binary operators. *)
    type binop =

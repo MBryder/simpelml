@@ -12,7 +12,7 @@
 %token DEF RETURN IF ELSE PRINT WHILE FOR IN AND OR NOT
 %token EOF
 %token LP RP LSQ RSQ COMMA EQUAL COLON BEGIN END NEWLINE
-%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV DET SCALE MPLUS MMINUS POP PUSH LEN
+%token PLUS MINUS TIMES DIV MOD TRANS MTIMES INV DET SCALE MPLUS MMINUS POP PUSH LEN LIST
 
 /* priorities and associativities */
 
@@ -66,6 +66,8 @@ expr:
     { Eunop (Upop, e1) }
 | e1 = expr LEN
     { Eunop (Ulen, e1) }
+| e1 = expr LIST
+    { Eunop (Ulist, e1) }
 | e1 = expr o = binop e2 = expr
     { Ebinop (o, e1, e2) }
 | f = ident LP e = separated_list(COMMA, expr) RP

@@ -81,6 +81,7 @@ rule next_tokens = parse
   | ".pop"  { [POP] }
   | ".push" { [PUSH] }
   | ".len"  { [LEN] }
+  | ".list"  { [LIST] }
   | integer as s
             { try [CST (Cint (int_of_string s))]
               with _ -> raise (Lexing_error ("constant too large: " ^ s)) }          
@@ -131,6 +132,7 @@ let token_to_string = function
     | POP -> "POP"
     | PUSH -> "PUSH"
     | LEN -> "LEN"
+    | LIST -> "LIST"
     | EQUAL -> "EQUAL"
     | CMP cmp ->
         begin match cmp with
@@ -184,7 +186,7 @@ let token_to_string = function
   let t = Queue.pop tokens in
     (* Processing the token *)
     begin match t with
-      | NEWLINE -> Printf.printf "\nToken: "
+      | NEWLINE -> Printf.printf "\nTokeeeeeeeen: "
       | EOF -> Printf.printf "[%s]\n" (token_to_string t)
       | _ -> Printf.printf "[%s], " (token_to_string t)
     end;
