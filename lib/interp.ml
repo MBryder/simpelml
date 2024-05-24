@@ -328,6 +328,9 @@ and interp_unop ctx op e1 =
   | Ulen ->
     begin match interp_expr ctx e1 with
       | Vlist l -> Vint (Array.length l)
+      | Vstring s -> Vint (String.length s)
+      | Vint i -> Vint (String.length (string_of_int i))
+      | Vfloat f -> Vint (String.length (string_of_float f))
       | _ -> error "length operation on a non-list type"
     end
   | Udet ->

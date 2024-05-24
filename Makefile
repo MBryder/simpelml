@@ -2,7 +2,7 @@ all: simpleml.exe combined.sm
 	dune exec lib/simpelml.exe combined.sm
 
 combined.sm: examples/stdlib.sm examples/test.sm
-	cat examples/stdlib.sm examples/uatParticipant.sm > combined.sm
+	cat examples/stdlib.sm examples/test.sm > combined.sm
 
 simpleml.exe:
 	dune build lib/simpleml.exe

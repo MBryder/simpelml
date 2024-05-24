@@ -1,102 +1,25 @@
-def hej(name):
-    print("Hej", name)
 
-print("Matrix transpose eksempel 1")
-o = [[1,2,3.5],[4,5,6]]
-print(o)
-o = o^T
-print(o)
-for i = 1 in 3:
-    print("Loop iteration: ", i)
-test = [1,1,1]
-test[0] = 3
-print(test)
 
-print(        )
-print("Matrix multiplikation eksempel 1")
+print("\n\n\nThis is an example program in SimpelML")
+print("The program is will use multi linear regression to predict and age based on height and shoe size \n")
 
-sigurd = [[1,2.9], [3.8,4]]
-imar = [[5,6], [7,8]]
-print(sigurd)
-print(imar)
+ages = [[10], [11], [12], [13], [14], [15], [10], [11], [13], [15]]
 
-hans = sigurd M* imar
-print(hans)
+height_shoe_size = [[138, 35], [142, 36], [148, 37], [154, 38], [160, 39], [166, 40], [140, 36], [144, 37], [156, 38], [168, 41]]
 
-print(        )
-print("Matrix multiplikation eksempel 2")
 
-sigurd2 = [[1,2,3], [4,5,6]]
-imar2 = [[1,2], [3,4], [5,6]]
-print(sigurd2)
-print(imar2)
+d = determineLinearFunction(height_shoe_size, ages)
 
-hans2 = sigurd2 M* imar2
-print(hans2)
+pre = [192,45]
+predicted_age = predict(d,pre )
 
-print(        )
-print("Matrix invers eksempel 1")
+print("For this example we are using this data set")
+print("height and shoes=", height_shoe_size)
+print("age =",ages)
 
-imar4 = [[1,2], [3,4]]
-print(imar4)
-sigurd4 = imar4.inv
-print(sigurd4)
+test = "hej"
 
-print(        )
-print("Artihmetic with floats")
-g = 4.55
-f = 2.3
+print(d)
+print(predicted_age)
 
-print(g*f)
-print(g+f)
-print(g//f)
-
-print(           )
-print("tests for int and float calculations")
-print(2.5+3)
-print(5+3.3)
-print(1+1)
-print(2.2+2.2)
-print(5-2.2)
-print(2*3.3)
-
-print(        )
-print("Matrix determinant eksempel 1")
-imar5 = [[1.3,2.2], [3.3,4.3]]
-sigurd5 = imar5.det
-print(sigurd5)
-
-print(        )
-print("Matrix determinant eksempel 2")
-imar6 = [[1,2], [3,4]]
-sigurd6 = imar6.det
-print(sigurd6)
-
-print(        )
-print("Matrix determinant eksempel 3")
-imar7 = [[1.3,2], [3,4.4]]
-sigurd7 = imar7.det
-print(sigurd7)
-
-print(        )
-print("Matrix scale eksempel 1")
-imar8 = [[1,2], [3,4]]
-sigurd8 = imar8.scale(2.2)
-print(sigurd8)
-
-print(        )
-print("Matrix addition eksempel 1")
-imar9 = [[1,2], [3,4]]
-sigurd9 = [[1,2], [3,4]]
-hans9 = imar9 M+ sigurd9
-print(hans9)
-
-print(        )
-print("Matrix subtraction eksempel 1")
-imar10 = [[1.1,3], [3,4]]
-sigurd10 = [[1,2], [3,4]]
-hans10 = imar10 M- sigurd10
-print(hans10)
-
-print(3.00000001)
-hej("Marcus")
+print(test.len)
